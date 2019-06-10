@@ -1,5 +1,6 @@
 package com.example.deinvirtuellerfreund;
 
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button start_button;
+    Dialog info_overlay;
     ProgressBar level_bar;
     TextView level_number;
     ImageView dropsi;
@@ -25,11 +26,18 @@ public class MainActivity extends AppCompatActivity {
         level_bar = findViewById(R.id.level_bar);
         level_number = findViewById(R.id.level_number);
         dropsi = findViewById(R.id.Dropsi_Image);
+        info_overlay = new Dialog(this);
 
     }
 
     public void info(View v){
+        info_overlay.setContentView(R.layout.info_overlay);
+        info_overlay.show();
 
+    }
+
+    public void close(View v){
+        info_overlay.hide();
     }
 
     public void talk(View v){
