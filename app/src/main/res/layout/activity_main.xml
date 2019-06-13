@@ -32,7 +32,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="talk"
         android:src="@drawable/micro_change"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,7 +123,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.079" />
 
-    <ImageView
+    <TextView
         android:id="@+id/weather_icon"
         android:layout_width="74dp"
         android:layout_height="77dp"
@@ -132,7 +131,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/weather_icon"
+        android:onClick="update_weather"
+        android:text="&#xf08c;"
+        android:textSize="10mm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.946"
