@@ -28,7 +28,7 @@ public class RecordHelper {
     }
 
     private Activity activity;
-    private static final int RECORDER_SAMPLERATE = 16000; //44100
+    private static final int RECORDER_SAMPLERATE = 44100; //44100
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_CHANNELS_OUT = AudioFormat.CHANNEL_OUT_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
