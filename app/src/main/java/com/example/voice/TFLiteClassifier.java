@@ -42,6 +42,13 @@ public class TFLiteClassifier {
         inp[0]=mels;
         float[][] out=new float[1][4];
         tflite.run(inp,out);
+
+        for (int i=0; i<out.length;i++){
+            for(int j=0; j<out[i].length;j++){
+
+            }
+        }
+
         System.out.println(arrayToString(out[0]));
     }
 
