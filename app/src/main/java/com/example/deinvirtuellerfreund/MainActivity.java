@@ -141,29 +141,21 @@ public class MainActivity extends AppCompatActivity {
     //public void talk(View v){ }
 
     public void feed(View v){
+        Droppie droppie=new Droppie(this);
         if(level_bar.getProgress()!=100){
             Integer add = 10 + level_bar.getProgress();
             level_bar.setProgress(add);
-            change_dropsi("happy");
+            droppie.changeEmotion(Emotion.Happiness);
         } else {
             Integer level = Integer.parseInt(level_number.getText().toString());
             level = level +1;
             level_number.setText(level.toString());
             level_bar.setProgress(0);
-            change_dropsi("normal");
+            droppie.changeEmotion(Emotion.Neutral);
         }
     }
 
-    //possible parameters: "normal", "sad", "happy"
-    public void change_dropsi(String mood){
-        if(mood=="happy"){
-            dropsi.setImageDrawable(getResources().getDrawable(R.drawable.drobsi_smiling));
-        } else if (mood=="sad"){
-            dropsi.setImageDrawable(getResources().getDrawable(R.drawable.drobsi_sad));
-        } else if (mood=="normal"){
-            dropsi.setImageDrawable(getResources().getDrawable(R.drawable.drobsi_normal));
-        }
-    }
+
 
     public void taskLoadUp(String query) {
         if (Function.isNetworkAvailable(getApplicationContext())) {

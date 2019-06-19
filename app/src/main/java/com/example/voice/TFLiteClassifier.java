@@ -5,6 +5,8 @@ import android.content.res.AssetFileDescriptor;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.deinvirtuellerfreund.Droppie;
+import com.example.deinvirtuellerfreund.Emotion;
 import com.example.deinvirtuellerfreund.R;
 
 import org.tensorflow.lite.Interpreter;
@@ -18,7 +20,7 @@ public class TFLiteClassifier {
 
     private Interpreter tflite;
 
-    private String[]emotions={"angry","happy","neutral"};
+    private String[]emotions={"angry","happy","neutral","sad"};
 
 
     public TFLiteClassifier(Activity activity) {
@@ -48,8 +50,22 @@ public class TFLiteClassifier {
 
             }
         }
+        Droppie droppie=new Droppie(activity);
+        droppie.changeEmotion(getEmotion(out[0]));
+    }
 
-        System.out.println(arrayToString(out[0]));
+    private Emotion getEmotion(float[]array) {
+        int i=0;
+        float max=0;
+        int maxInd=0;
+        while(i<array.length) {
+            if(array[i]>max) {
+                max=array[i];
+                maxInd=i;
+            }
+            i++;
+        }
+        return Emotion.values()[maxInd];
     }
 
 
