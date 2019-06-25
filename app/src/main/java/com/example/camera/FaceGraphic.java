@@ -32,13 +32,13 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     float y_face;
 
     private static final int COLOR_CHOICES[] = {
-            Color.BLUE,
-            Color.CYAN,
-            Color.GREEN,
-            Color.MAGENTA,
-            Color.RED,
-            Color.WHITE,
-            Color.YELLOW
+            //Color.BLUE,
+            //Color.CYAN,
+            //Color.GREEN,
+            //Color.MAGENTA,
+            //Color.RED,
+            //Color.WHITE,
+            //Color.YELLOW
     };
     private static int mCurrentColorIndex = 0;
 
@@ -53,18 +53,19 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
 
-        mCurrentColorIndex = (mCurrentColorIndex + 1) % COLOR_CHOICES.length;
-        final int selectedColor = COLOR_CHOICES[mCurrentColorIndex];
+        //mCurrentColorIndex = (mCurrentColorIndex + 1) % COLOR_CHOICES.length;
+        //final int selectedColor = COLOR_CHOICES[mCurrentColorIndex];
+        final int fixColor = Color.parseColor("#CEECF5");
 
         mFacePositionPaint = new Paint();
-        mFacePositionPaint.setColor(selectedColor);
+        mFacePositionPaint.setColor(fixColor);
 
         mIdPaint = new Paint();
-        mIdPaint.setColor(selectedColor);
+        mIdPaint.setColor(fixColor);
         mIdPaint.setTextSize(ID_TEXT_SIZE);
 
         mBoxPaint = new Paint();
-        mBoxPaint.setColor(selectedColor);
+        mBoxPaint.setColor(fixColor);
         mBoxPaint.setStyle(Paint.Style.STROKE);
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
     }

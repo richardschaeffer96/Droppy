@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         level_bar = findViewById(R.id.level_bar);
         level_number = findViewById(R.id.level_number);
         dropsi = findViewById(R.id.Dropsi_Image);
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // permission not granted, initiate request

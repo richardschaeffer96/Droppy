@@ -191,6 +191,7 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
                         Bitmap scaledBmp = Bitmap.createScaledBitmap(croppedBmp, 48, 48, true);
 
                         scaledBmp.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                        System.out.println("Bild ist: " + scaledBmp.toString());
 
                         //TO-DO: scaledBmp is the image you have to compare with the database.
 
