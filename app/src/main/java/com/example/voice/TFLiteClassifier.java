@@ -72,9 +72,9 @@ public class TFLiteClassifier {
             int x=0;
             while(x<width) {
                 int col=scaledBMP.getPixel(x,y);
-                inp[0][y][x][0]=Color.red(col);
-                inp[0][y][x][1]=Color.green(col);
-                inp[0][y][x][2]=Color.blue(col);
+                inp[0][y][x][0]=(float)Color.red(col)/255f;
+                inp[0][y][x][1]=(float)Color.green(col)/255f;
+                inp[0][y][x][2]=(float)Color.blue(col)/255f;
                 x++;
             }
             y++;
