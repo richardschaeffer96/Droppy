@@ -7,6 +7,18 @@
     android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
+    <com.example.camera.CameraPreview
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="114dp"/>
+
+    <com.example.camera.GraphicOverlay
+        android:id="@+id/faceOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageView
         android:id="@+id/Button_Eat"
         android:layout_width="81dp"

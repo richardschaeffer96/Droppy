@@ -1,14 +1,21 @@
 package com.example.deinvirtuellerfreund;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +25,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.camera.CameraPreview;
+import com.example.camera.GraphicFaceTracker;
+import com.example.camera.GraphicOverlay;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
 import com.example.voice.TFLiteClassifier;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.Tracker;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     private RecordHelper recordHelper;
     private Activity activity;
+
+    private CameraPreview mPreview;
+    private GraphicOverlay mGraphicOverlay;
+    private CameraSource mCameraSource = null;
+
+    private static final String TAG = "VideoFaceDetection";
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final int RC_HANDLE_GMS = 2;
 
     Dialog info_overlay;
     ProgressBar level_bar;
@@ -66,26 +91,35 @@ public class MainActivity extends AppCompatActivity {
         weather_icon.setTypeface(weatherFont);
 
         activity = this;
-        recordHelper=new RecordHelper(activity);
+        recordHelper = new RecordHelper(activity);
 
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.faceOverlay);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+            createCameraSource();
+        }
 
         taskLoadUp(city);
 
-        talk.setOnClickListener(new View.OnClickListener(){
+        talk.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(recordHelper.getRecording()==false){
+                if (recordHelper.getRecording() == false) {
                     recordHelper.startRecording();
                     talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro_clicked));
                 } else {
                     recordHelper.stopRecording();
                     talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro));
                     try {
-                        short[]signal=recordHelper.transformToWavData();
-                        Preprocessor prep=new Preprocessor();
-                        float[][]mels=prep.preprocessAudioFile(signal,39);
-                        TFLiteClassifier tflite=new TFLiteClassifier(activity);
+                        short[] signal = recordHelper.transformToWavData();
+                        Preprocessor prep = new Preprocessor();
+                        float[][] mels = prep.preprocessAudioFile(signal, 39);
+                        TFLiteClassifier tflite = new TFLiteClassifier(activity);
                         tflite.recognize(mels);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -127,6 +161,90 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
+            createCameraSource();
+        }
+    }
+
+    private void createCameraSource() {
+        Context context = getApplicationContext();
+        FaceDetector detector = new FaceDetector.Builder(context)
+                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .build();
+
+        detector.setProcessor(
+                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
+                        .build());
+
+        mCameraSource = new CameraSource.Builder(context, detector)
+                .setRequestedPreviewSize(640, 480)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                .setRequestedFps(30.0f)
+                .build();
+
+        /* TO-DO Turn Camera Sound OFF!
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(id, info);
+        if (info.canDisableShutterSound) {
+            mCamera.enableShutterSound(false);
+        }
+        */
+    }
+
+    /**
+     * Restarts the camera.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        startCameraSource();
+    }
+
+    /**
+     * Stops the camera.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPreview.stop();
+    }
+
+    /**
+     * Releases the resources associated with the camera source, the associated detector, and the
+     * rest of the processing pipeline.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCameraSource != null) {
+            mCameraSource.release();
+        }
+    }
+
+    private void startCameraSource() {
+        // check that the device has play services available.
+        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
+        if (code != ConnectionResult.SUCCESS) {
+            Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
+            dlg.show();
+        }
+
+        if (mCameraSource != null) {
+            try {
+                mPreview.start(mCameraSource, mGraphicOverlay);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to start camera source.", e);
+                mCameraSource.release();
+                mCameraSource = null;
+            }
+        }
+    }
+
+
 
     public void info(View v){
         info_overlay.setContentView(R.layout.info_overlay);
@@ -225,5 +343,15 @@ public class MainActivity extends AppCompatActivity {
         taskLoadUp(city);
     }
 
+    /**
+     * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
+     * uses this factory to create face trackers as needed -- one for each individual.
+     */
+    private class GraphicFaceTrackerFactory implements MultiProcessor.Factory<Face> {
+        @Override
+        public Tracker<Face> create(Face face) {
+            return new GraphicFaceTracker(mGraphicOverlay);
+        }
+    }
 
 }
