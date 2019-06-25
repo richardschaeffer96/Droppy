@@ -30,6 +30,7 @@ public class TFLiteClassifier {
     private Activity activity;
 
 
+    // Recognizing
     public void recognize(float[][] mels) {
 
         String modelFile="model_emodb.lite";
