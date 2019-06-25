@@ -33,4 +33,19 @@ public class Droppie {
         }
     }
 
+    public Emotion getEmotion(float[]array) {
+        int i=0;
+        float max=0;
+        int maxInd=0;
+        while(i<array.length) {
+            if(array[i]>max) {
+                max=array[i];
+                maxInd=i;
+            }
+            i++;
+        }
+        System.out.println(Emotion.values()[maxInd]);
+        return Emotion.values()[maxInd];
+    }
+
 }

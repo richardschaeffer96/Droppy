@@ -17,6 +17,8 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.deinvirtuellerfreund.MainActivity;
+import com.example.voice.TFLiteClassifier;
 import com.google.android.gms.vision.CameraSource;
 
 import java.io.ByteArrayOutputStream;
@@ -194,6 +196,8 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
                         System.out.println("Bild ist: " + scaledBmp.toString());
 
                         //TO-DO: scaledBmp is the image you have to compare with the database.
+                        TFLiteClassifier tflite=new TFLiteClassifier(MainActivity.activity);
+                        tflite.recognizeImage(scaledBmp);
 
                         FileOutputStream fout = new FileOutputStream(imageFile);
                         fout.write(ostream.toByteArray());

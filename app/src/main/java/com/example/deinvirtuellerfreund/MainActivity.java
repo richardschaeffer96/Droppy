@@ -51,7 +51,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private RecordHelper recordHelper;
-    private Activity activity;
+    public static Activity activity;
 
     private CameraPreview mPreview;
     private GraphicOverlay mGraphicOverlay;

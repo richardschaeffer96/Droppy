@@ -2,6 +2,9 @@ package com.example.voice;
 
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -30,7 +33,7 @@ public class TFLiteClassifier {
     private Activity activity;
 
 
-    // Recognizing
+    // Recognizing Audio
     public void recognize(float[][] mels) {
 
         String modelFile="model_emodb.lite";
@@ -46,28 +49,46 @@ public class TFLiteClassifier {
         float[][] out=new float[1][4];
         tflite.run(inp,out);
 
-        for (int i=0; i<out.length;i++){
-            for(int j=0; j<out[i].length;j++){
-
-            }
-        }
         Droppie droppie=new Droppie(activity);
-        droppie.changeEmotion(getEmotion(out[0]));
+        droppie.changeEmotion(droppie.getEmotion(out[0]));
     }
 
-    private Emotion getEmotion(float[]array) {
-        int i=0;
-        float max=0;
-        int maxInd=0;
-        while(i<array.length) {
-            if(array[i]>max) {
-                max=array[i];
-                maxInd=i;
-            }
-            i++;
+    // Recognizing Images
+    public void recognizeImage(Bitmap scaledBMP) {
+        System.out.println("START IMAGE RECOGNITION");
+        String modelFile="fer2013_model.lite";
+        try {
+            tflite = new Interpreter(loadModelFile(activity, modelFile));
         }
-        return Emotion.values()[maxInd];
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int height=scaledBMP.getHeight();
+        int width=scaledBMP.getWidth();
+        float[][][][] inp=new float[1][height][width][3];
+        int y=0;
+        while(y<height) {
+            int x=0;
+            while(x<width) {
+                int col=scaledBMP.getPixel(x,y);
+                inp[0][y][x][0]=Color.red(col);
+                inp[0][y][x][1]=Color.green(col);
+                inp[0][y][x][2]=Color.blue(col);
+                x++;
+            }
+            y++;
+        }
+
+        float[][] out=new float[1][4];
+        tflite.run(inp,out);
+
+        Droppie droppie=new Droppie(activity);
+        droppie.changeEmotion(droppie.getEmotion(out[0]));
+
     }
+
+
 
 
     private String arrayToString(float[]array) {
