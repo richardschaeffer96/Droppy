@@ -98,14 +98,14 @@ public class MainActivity extends AppCompatActivity {
         mGraphicOverlay = findViewById(R.id.faceOverlay);
 
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        //if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        } else {
+        //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        //} else {
             createCameraSource();
-        }
+        //}
 
-        taskLoadUp(city);
+        //taskLoadUp(city);
 
         talk.setOnClickListener(new View.OnClickListener() {
 
