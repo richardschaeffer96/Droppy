@@ -44,6 +44,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.DateFormat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+import org.apache.http.util.EncodingUtils;
+
 
 public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
 
@@ -90,7 +100,17 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
 
         level_bar = findViewById(R.id.level_bar);
+        if(fileIsExists("levelbar.txt")){
+
+            level_bar.setProgress(levelbarauslesen("levelbar.txt"));
+
+        }
         level_number = findViewById(R.id.level_number);
+        if(fileIsExists("levelnumber.txt")){
+
+            level_number.setText(levelnumberauslesen("levelnumber.txt"));
+
+        }
 
         droppy = findViewById(R.id.droppy_base);
         eyebrows = findViewById(R.id.droppy_neutral_eyebrows);
@@ -192,7 +212,57 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         */
 
     }
+    public boolean fileIsExists(String filename) {
+        try {
+            String AbsolutePath = getFilesDir().getAbsolutePath();
+            File f = new File(AbsolutePath + "/" + filename);
+            if (!f.exists()) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    public Integer levelbarauslesen(String filename){
+        String fileContent="";
 
+        try {
+            FileInputStream fis;
+            fis = openFileInput(filename);
+            byte[] buffer = new byte[2];
+            fis.read(buffer);
+
+            fileContent = EncodingUtils.getString(buffer, "UTF-8");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return Integer.parseInt(fileContent);
+    }
+    public String levelnumberauslesen(String filename){
+        String fileContent="";
+
+        try {
+            FileInputStream fis;
+            fis = openFileInput(filename);
+            byte[] buffer = new byte[1];
+            fis.read(buffer);
+
+            fileContent = EncodingUtils.getString(buffer, "UTF-8");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return fileContent;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
@@ -324,12 +394,40 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             Integer add = 10 + level_bar.getProgress();
             level_bar.setProgress(add);
             droppie.changeEmotion(Emotion.Happiness);
+            try {
+                FileOutputStream fos = openFileOutput("levelbar.txt",
+                        Context.MODE_PRIVATE);
+                String inputFileContext = add.toString();
+                fos.write(inputFileContext.getBytes());
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(fileIsExists("levelbar.txt")){
+                System.out.println("levelbar datein existiert" );
+            }
         } else {
             Integer level = Integer.parseInt(level_number.getText().toString());
             level = level +1;
             level_number.setText(level.toString());
             level_bar.setProgress(0);
             droppie.changeEmotion(Emotion.Neutral);
+            try {
+                FileOutputStream fos = openFileOutput("levelnumber.txt",
+                        Context.MODE_PRIVATE);
+                String inputFileContext = level.toString();
+                fos.write(inputFileContext.getBytes());
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(fileIsExists("levelnumber.txt")){
+                System.out.println("levelnumber datein existiert" );
+            }
         }
     }
 
