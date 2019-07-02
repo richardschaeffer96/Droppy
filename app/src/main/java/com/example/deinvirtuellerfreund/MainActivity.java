@@ -181,22 +181,16 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
-    public boolean fileIsExists(String strFile)
-    {
-        try
-        {
-            File f=new File(strFile);
-            if(!f.exists())
-            {
+    public boolean fileIsExists(String filename) {
+        try {
+            String AbsolutePath = getFilesDir().getAbsolutePath();
+            File f = new File(AbsolutePath + "/" + filename);
+            if (!f.exists()) {
                 return false;
             }
-
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
-
         return true;
     }
     public Integer fileauslesen(String filename){
@@ -208,7 +202,8 @@ public class MainActivity extends AppCompatActivity {
             byte[] buffer = new byte[1024];
             fis.read(buffer);
 
-            fileContent = EncodingUtils.getString(buffer, "UTF-8");
+            fileContent =buffer.toString();
+                    //EncodingUtils.getString(buffer, "UTF-8");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -216,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         return Ergebnis= Integer.parseInt(fileContent);
     }
     @Override
@@ -331,6 +327,9 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(fileIsExists("levelbar.txt")){
+                System.out.println("levelbar datein existiert" );
+            }
         } else {
             Integer level = Integer.parseInt(level_number.getText().toString());
             level = level +1;
@@ -348,9 +347,12 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(fileIsExists("levelnumber.txt")){
+            System.out.println("levelnumber datein existiert" );
         }
 
-    }
+
+    }}
 
 
 
