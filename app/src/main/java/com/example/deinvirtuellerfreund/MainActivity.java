@@ -230,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return Ergebnis= Integer.parseInt(fileContent);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
