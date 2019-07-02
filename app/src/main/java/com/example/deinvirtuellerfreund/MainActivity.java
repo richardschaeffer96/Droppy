@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
 
         droppy = findViewById(R.id.droppy_base);
-        eyebrows = findViewById(R.id.droppy_neutral_eyebrows);
-        eyes = findViewById(R.id.droppy_neutral_eyes);
-        mouth = findViewById(R.id.droppy_neutral_mouth);
+        eyebrows = findViewById(R.id.droppy_eyebrows);
+        eyes = findViewById(R.id.droppy_eyes);
+        mouth = findViewById(R.id.droppy_mouth);
 
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);

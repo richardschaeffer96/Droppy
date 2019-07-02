@@ -81,7 +81,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
-        android:id="@+id/droppy_neutral_eyebrows"
+        android:id="@+id/droppy_eyebrows"
         android:layout_width="262dp"
         android:layout_height="438dp"
         android:layout_marginStart="8dp"
@@ -94,7 +94,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
-        android:id="@+id/droppy_neutral_eyes"
+        android:id="@+id/droppy_eyes"
         android:layout_width="262dp"
         android:layout_height="438dp"
         android:layout_marginStart="8dp"
@@ -108,7 +108,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/droppy_neutral_mouth"
+        android:id="@+id/droppy_mouth"
         android:layout_width="262dp"
         android:layout_height="438dp"
         android:layout_marginStart="8dp"
