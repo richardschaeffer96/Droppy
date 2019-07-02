@@ -6,15 +6,20 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int RC_HANDLE_GMS = 2;
 
+    MediaPlayer player;
     Dialog info_overlay;
     ProgressBar level_bar;
     TextView level_number;
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     ImageView eyes;
     ImageView mouth;
     ImageView talk;
+    ImageView eat;
     Typeface weatherFont;
     TextView weather_icon;
     String city = "80331";
@@ -92,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
+        eat = findViewById(R.id.Button_Eat);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weather_icon = findViewById(R.id.weather_icon);
         weather_icon.setTypeface(weatherFont);
@@ -282,7 +290,36 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     //public void talk(View v){ }
 
     public void feed(View v){
+        PopupMenu popupMenu = new PopupMenu(MainActivity.this, eat);
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String gameTitle = (String) item.getTitle();
+                switch (gameTitle) {
+                    case "game1":
+                        jokeChallenge();
+                        break;
+                    case "game2":
+                        gameTwo();
+                        break;
+                    case "game3":
+                        gameThree();
+                        break;
+                }
+
+          //      Toast.makeText(MainActivity.this, "" + item.getTitle(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    private void changeLevel() {
         Droppie droppie=new Droppie(this);
+
         if(level_bar.getProgress()!=100){
             Integer add = 10 + level_bar.getProgress();
             level_bar.setProgress(add);
@@ -294,6 +331,42 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             level_bar.setProgress(0);
             droppie.changeEmotion(Emotion.Neutral);
         }
+    }
+
+    public void jokeChallenge() {
+        if (player == null) {
+            player = MediaPlayer.create(this, R.raw.nerdwitz);
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    stopPlayer();
+                }
+            });
+        }
+
+        player.start();
+        changeLevel();
+    }
+
+    private void stopPlayer() {
+        if (player != null) {
+            player.release();
+            player = null;
+            Toast.makeText(this, "MediaPlayer released", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onStop() {
+        super.onStop();
+        stopPlayer();
+    }
+
+    public void gameTwo() {
+
+    }
+
+    public void gameThree() {
+
     }
 
 
