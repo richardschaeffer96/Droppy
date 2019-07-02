@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public Integer levelbarauslesen(String filename){
         String fileContent="";
-        Integer Ergebnis;
+
         try {
             FileInputStream fis;
             fis = openFileInput(filename);
@@ -211,11 +211,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        return Ergebnis= Integer.parseInt(fileContent);
+        return Integer.parseInt(fileContent);
     }
-    public Integer levelnumberauslesen(String filename){
+    public String levelnumberauslesen(String filename){
         String fileContent="";
-        Integer Ergebnis;
+
         try {
             FileInputStream fis;
             fis = openFileInput(filename);
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return Ergebnis= Integer.parseInt(fileContent);
+        return fileContent;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
