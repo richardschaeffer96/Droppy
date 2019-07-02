@@ -16,19 +16,19 @@ public class Droppie {
 
     //possible parameters: "normal", "sad", "happy"
     public void changeEmotion(Emotion emotion){
-        ImageView dropsi=activity.findViewById(R.id.Dropsi_Image);
+        ImageView dropsi=activity.findViewById(R.id.droppy_base);
         switch (emotion) {
             case Anger:
-                dropsi.setImageDrawable(activity.getResources().getDrawable(R.drawable.dropsi_angry));
+                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.dropsi_angry));
                 break;
             case Neutral:
-                dropsi.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_normal));
+                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_normal));
                 break;
             case Sadness:
-                dropsi.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_sad));
+                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_sad));
                 break;
             case Happiness:
-                dropsi.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_smiling));
+                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_smiling));
                 break;
         }
     }

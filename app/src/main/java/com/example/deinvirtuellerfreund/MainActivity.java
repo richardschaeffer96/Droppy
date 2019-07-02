@@ -1,25 +1,19 @@
 package com.example.deinvirtuellerfreund;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,11 +38,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
 
     private RecordHelper recordHelper;
     public static Activity activity;
@@ -64,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
     Dialog info_overlay;
     ProgressBar level_bar;
     TextView level_number;
-    ImageView dropsi;
+    ImageView droppy;
+    ImageView eyebrows;
+    ImageView eyes;
+    ImageView mouth;
     ImageView talk;
     Typeface weatherFont;
     TextView weather_icon;
@@ -75,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
     /* Please Put your API KEY here */
     Boolean check_button = false;
 
+    Animation animWobble;
+    Animation animEyes;
+    Animation animEyebrows;
+    Animation animMouth;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +84,33 @@ public class MainActivity extends AppCompatActivity {
 
         level_bar = findViewById(R.id.level_bar);
         level_number = findViewById(R.id.level_number);
-        dropsi = findViewById(R.id.Dropsi_Image);
+
+        droppy = findViewById(R.id.droppy_base);
+        eyebrows = findViewById(R.id.droppy_neutral_eyebrows);
+        eyes = findViewById(R.id.droppy_neutral_eyes);
+        mouth = findViewById(R.id.droppy_neutral_mouth);
+
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weather_icon = findViewById(R.id.weather_icon);
         weather_icon.setTypeface(weatherFont);
+
+        animWobble = AnimationUtils.loadAnimation(this, R.anim.wobbleanimation);
+        animWobble.setAnimationListener(this);
+        droppy.startAnimation(animWobble);
+
+        animEyes = AnimationUtils.loadAnimation(this, R.anim.eyesanimation);
+        animEyes.setAnimationListener(this);
+        eyes.startAnimation(animEyes);
+
+        animEyebrows = AnimationUtils.loadAnimation(this, R.anim.eyebrowsanimation);
+        animEyebrows.setAnimationListener(this);
+        eyebrows.startAnimation(animEyebrows);
+
+        animMouth = AnimationUtils.loadAnimation(this, R.anim.mouthanimation);
+        animMouth.setAnimationListener(this);
+        mouth.startAnimation(animMouth);
 
         activity = this;
         recordHelper = new RecordHelper(activity);
@@ -286,6 +307,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+       // droppy.startAnimation(animWobble);
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
+    }
 
 
     class DownloadWeather extends AsyncTask< String, Void, String > {
