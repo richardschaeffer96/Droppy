@@ -47,7 +47,15 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+import org.apache.http.util.EncodingUtils;
 public class MainActivity extends AppCompatActivity {
 
     private RecordHelper recordHelper;
@@ -83,7 +91,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         level_bar = findViewById(R.id.level_bar);
+        if(fileIsExists("levelbar.txt")){
+
+            level_bar.setProgress(fileauslesen("levelbar.txt"));
+
+        }
         level_number = findViewById(R.id.level_number);
+        if(fileIsExists("levelnumber.txt")){
+
+            level_number.setText(fileauslesen("levelnumber.txt"));
+
+        }
         dropsi = findViewById(R.id.Dropsi_Image);
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
@@ -163,7 +181,43 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
+    public boolean fileIsExists(String strFile)
+    {
+        try
+        {
+            File f=new File(strFile);
+            if(!f.exists())
+            {
+                return false;
+            }
 
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    public Integer fileauslesen(String filename){
+        String fileContent="";
+        Integer Ergebnis;
+        try {
+            FileInputStream fis;
+            fis = openFileInput("levelbar.txt");
+            byte[] buffer = new byte[1024];
+            fis.read(buffer);
+
+            fileContent = EncodingUtils.getString(buffer, "UTF-8");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return Ergebnis= Integer.parseInt(fileContent);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
@@ -266,14 +320,38 @@ public class MainActivity extends AppCompatActivity {
             Integer add = 10 + level_bar.getProgress();
             level_bar.setProgress(add);
             droppie.changeEmotion(Emotion.Happiness);
+            try {
+                FileOutputStream fos = openFileOutput("levelbar.txt",
+                        Context.MODE_PRIVATE);
+                String inputFileContext = add.toString();
+                fos.write(inputFileContext.getBytes());
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             Integer level = Integer.parseInt(level_number.getText().toString());
             level = level +1;
             level_number.setText(level.toString());
             level_bar.setProgress(0);
             droppie.changeEmotion(Emotion.Neutral);
+            try {
+                FileOutputStream fos = openFileOutput("levelnumber.txt",
+                        Context.MODE_PRIVATE);
+                String inputFileContext = level.toString();
+                fos.write(inputFileContext.getBytes());
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
+
 
 
 
