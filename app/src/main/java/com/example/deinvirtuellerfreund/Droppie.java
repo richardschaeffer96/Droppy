@@ -13,22 +13,31 @@ public class Droppie {
 
     private Activity activity;
 
-
-    //possible parameters: "normal", "sad", "happy"
     public void changeEmotion(Emotion emotion){
-        ImageView dropsi=activity.findViewById(R.id.droppy_base);
+        //ImageView dropsi=activity.findViewById(R.id.droppy_base);
+        ImageView eyebrows = activity.findViewById(R.id.droppy_eyebrows);
+        ImageView eyes = activity.findViewById(R.id.droppy_eyes);
+        ImageView mouth = activity.findViewById(R.id.droppy_mouth);
         switch (emotion) {
             case Anger:
-                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.dropsi_angry));
+                eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_angry_eyebrows));
+                eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_angry_eyes));
+                mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_angry_mouth));
                 break;
             case Neutral:
-                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_normal));
+                eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_neutral_eyebrows));
+                eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_neutral_eyes));
+                mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_neutral_mouth));
                 break;
             case Sadness:
-                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_sad));
+                eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_sad_eyebrows));
+                eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_sad_eyes));
+                mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_sad_mouth));
                 break;
             case Happiness:
-                //droppy.setImageDrawable(activity.getResources().getDrawable(R.drawable.drobsi_smiling));
+                eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_lucky_eyebrows));
+                eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_lucky_eyes));
+                mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_lucky_mouth));
                 break;
         }
     }
