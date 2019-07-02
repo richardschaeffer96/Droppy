@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
 
-            level_bar.setProgress(fileauslesen("levelbar.txt"));
+            level_bar.setProgress(levelbarauslesen("levelbar.txt"));
 
         }
         level_number = findViewById(R.id.level_number);
         if(fileIsExists("levelnumber.txt")){
 
-            level_number.setText(fileauslesen("levelnumber.txt"));
+            level_number.setText(levelnumberauslesen("levelnumber.txt"));
 
         }
         dropsi = findViewById(R.id.Dropsi_Image);
@@ -193,17 +193,16 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-    public Integer fileauslesen(String filename){
+    public Integer levelbarauslesen(String filename){
         String fileContent="";
         Integer Ergebnis;
         try {
             FileInputStream fis;
-            fis = openFileInput("levelbar.txt");
-            byte[] buffer = new byte[1024];
+            fis = openFileInput(filename);
+            byte[] buffer = new byte[2];
             fis.read(buffer);
 
-            fileContent =buffer.toString();
-                    //EncodingUtils.getString(buffer, "UTF-8");
+            fileContent = EncodingUtils.getString(buffer, "UTF-8");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -214,6 +213,23 @@ public class MainActivity extends AppCompatActivity {
 
         return Ergebnis= Integer.parseInt(fileContent);
     }
+    public Integer levelnumberauslesen(String filename){
+        String fileContent="";
+        Integer Ergebnis;
+        try {
+            FileInputStream fis;
+            fis = openFileInput(filename);
+            byte[] buffer = new byte[1];
+            fis.read(buffer);
+
+            fileContent = EncodingUtils.getString(buffer, "UTF-8");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
