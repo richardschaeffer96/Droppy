@@ -39,6 +39,11 @@ public class Droppie {
                 eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_lucky_eyes));
                 mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_lucky_mouth));
                 break;
+            case Talking:
+                eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_neutral_eyebrows));
+                eyes.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_neutral_eyes));
+                mouth.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_talking_mouth));
+                break;
         }
     }
 

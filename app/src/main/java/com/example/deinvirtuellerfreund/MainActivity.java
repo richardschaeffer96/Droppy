@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Animation animEyes;
     Animation animEyebrows;
     Animation animMouth;
+    Droppie droppie;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -111,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             level_number.setText(levelnumberauslesen("levelnumber.txt"));
 
         }
+
+        droppie=new Droppie(this);
 
         droppy = findViewById(R.id.droppy_base);
         eyebrows = findViewById(R.id.droppy_eyebrows);
@@ -369,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
                     case "game1":
+                        droppie.changeEmotion(Emotion.Talking);
                         jokeChallenge();
                         break;
                     case "game2":
@@ -388,12 +392,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     private void changeLevel() {
-        Droppie droppie=new Droppie(this);
+
 
         if(level_bar.getProgress()!=100){
             Integer add = 10 + level_bar.getProgress();
             level_bar.setProgress(add);
-            droppie.changeEmotion(Emotion.Happiness);
+            //droppie.changeEmotion(Emotion.Happiness);
             try {
                 FileOutputStream fos = openFileOutput("levelbar.txt",
                         Context.MODE_PRIVATE);
@@ -438,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     stopPlayer();
+                    droppie.changeEmotion(Emotion.Happiness);
                 }
             });
         }
