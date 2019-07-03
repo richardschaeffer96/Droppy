@@ -102,13 +102,10 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
                     System.out.println("ICH BIN IN DER PREVIEW!!!!!!!");
                     mOverlay.setCameraInfo(min, max, mCameraSource.getCameraFacing());
                     mOverlay.setSourceAndContext(mCameraSource, mContext);
-                    //mOverlay.takephoto(mCameraSource, mContext);
-                    //takephoto();
+
                 } else {
                     mOverlay.setCameraInfo(max, min, mCameraSource.getCameraFacing());
                     mOverlay.setSourceAndContext(mCameraSource, mContext);
-                    //mOverlay.takephoto(mCameraSource, mContext);
-                    //takephoto();
                 }
                 mOverlay.clear();
             }

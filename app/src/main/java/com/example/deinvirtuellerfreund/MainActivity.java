@@ -1,14 +1,20 @@
 package com.example.deinvirtuellerfreund;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -21,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,10 +79,14 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Dialog info_overlay;
     ProgressBar level_bar;
     TextView level_number;
+
+    //BODY OF DROPPY
     ImageView droppy;
     ImageView eyebrows;
     ImageView eyes;
     ImageView mouth;
+    ImageView collisionbox;
+
     ImageView talk;
     ImageView eat;
     Typeface weatherFont;
@@ -94,12 +105,46 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Animation animTalking;
     Droppie droppie;
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
+    private static final int REQUEST_INTERNET = 1;
+    private static final int REQUEST_RECORD_AUDIO = 1;
+    private static final int REQUEST_CAMERA = 1;
+    private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+
+    {
+        // permission not granted, initiate request
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+    }
+
+        /*
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+        } else if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
+        }
+
+        */
 
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
@@ -120,6 +165,31 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         eyebrows = findViewById(R.id.droppy_eyebrows);
         eyes = findViewById(R.id.droppy_eyes);
         mouth = findViewById(R.id.droppy_mouth);
+        collisionbox = findViewById(R.id.collisionbox);
+
+        //TODO HELING
+        collisionbox.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int X = (int) event.getRawX();
+                final int Y = (int) event.getRawY();
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                }
+                return true;
+            }
+        });
+
+        //droppy.setTouchListener oder .setMotionListener
 
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
@@ -293,13 +363,15 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 .setRequestedFps(30.0f)
                 .build();
 
-        /* TO-DO Turn Camera Sound OFF!
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(id, info);
-        if (info.canDisableShutterSound) {
-            mCamera.enableShutterSound(false);
-        }
-        */
+        //camera sound off
+        AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+
+        /*camera sound on
+        AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+	    mgr.setStreamMute(AudioManager.STREAM_SYSTEM, false);
+         */
+
     }
 
     /**
@@ -571,6 +643,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         public Tracker<Face> create(Face face) {
             return new GraphicFaceTracker(mGraphicOverlay);
         }
+    }
+
+    public void poke(View v){
+        //TODO Richard add animation
     }
 
 }

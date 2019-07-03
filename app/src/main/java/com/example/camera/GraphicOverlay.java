@@ -117,6 +117,7 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
                 height = Math.round(graphic.getHeight());
                 x_face = Math.round(graphic.getX_face());
                 y_face = Math.round(graphic.getY_face());
+                //add delay mit if
                 takephoto();
             }
 
