@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Animation animEyes;
     Animation animEyebrows;
     Animation animMouth;
+    Animation animTalking;
     Droppie droppie;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -142,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         animMouth = AnimationUtils.loadAnimation(this, R.anim.mouthanimation);
         animMouth.setAnimationListener(this);
         mouth.startAnimation(animMouth);
+
+        animTalking = AnimationUtils.loadAnimation(this, R.anim.talkinganimation);
+        animTalking.setAnimationListener(this);
 
         activity = this;
         recordHelper = new RecordHelper(activity);
@@ -373,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 switch (gameTitle) {
                     case "game1":
                         droppie.changeEmotion(Emotion.Talking);
+                        mouth.startAnimation(animTalking);
                         jokeChallenge();
                         break;
                     case "game2":
@@ -442,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     stopPlayer();
+                    mouth.startAnimation(animMouth);
                     droppie.changeEmotion(Emotion.Happiness);
                 }
             });
