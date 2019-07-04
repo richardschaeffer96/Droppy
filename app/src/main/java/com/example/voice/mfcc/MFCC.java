@@ -6,10 +6,6 @@
 package com.example.voice.mfcc;
 
 
-import android.util.Log;
-
-
-
 /**
  * Mel-Frequency Cepstrum Coefficients.
  *
@@ -67,11 +63,8 @@ public class MFCC {
 
 //DCT to mfcc, librosa
 	private float[][] dctMfcc(double[] y){
-		Log.d("Debug","START DCTMFCC");
 		final float[][] specTroGram = powerToDb(melSpectrogram(y));
-		Log.d("Debug","specTroGram: "+specTroGram.length+"x"+specTroGram[0].length);
 		final float[][] dctBasis = dctFilter(n_mfcc, n_mels);
-		Log.d("Debug","dctBasis: "+dctBasis.length+"x"+dctBasis[0].length);
 		float[][] mfccSpecTro = new float[n_mfcc][specTroGram[0].length];
 		for (int i = 0; i < n_mfcc; i++){
 			for (int j = 0; j < specTroGram[0].length; j++){
@@ -96,7 +89,6 @@ public class MFCC {
 				}
 			}
 		}
-		Log.d("Debug","melS: "+melS.length+"x"+melS[0].length);
 		return melS;
 	}
 
@@ -129,7 +121,6 @@ public class MFCC {
 				fftmagSpec[i][k] = magSpec[i];
 			}
 		}
-		Log.d("Debug","fftmagSpec: "+fftmagSpec.length+"x"+fftmagSpec[0].length);
 		return fftmagSpec;
 	}
 
@@ -139,7 +130,6 @@ public class MFCC {
 		for (int m = 0; m < frame.length; m++) {
 			magSpec[m] = (float)(fft.real[m] * fft.real[m] + fft.imag[m] * fft.imag[m]);
 		}
-		Log.d("Debug","magSpec: "+magSpec.length);
 		return magSpec;
 	}
 
@@ -153,7 +143,6 @@ public class MFCC {
 		for (int i = 0; i < n_fft; i++){
 			win[i] = (float)(0.5 - 0.5 * Math.cos(2.0* Math.PI*i/n_fft));
 		}
-		Log.d("Debug","win: "+win.length);
 		return win;
 	}
 
@@ -166,7 +155,6 @@ public class MFCC {
 				winFrames[i][j] = ypad[j*hop_length+i];
 			}
 		}
-		Log.d("Debug","winFrames: "+winFrames.length+"x"+winFrames[0].length);
 		return winFrames;
 	}
 
@@ -267,7 +255,6 @@ public class MFCC {
 				weights[i][j] *= enorm[i];
 			}
 		}
-		Log.d("Debug","weights: "+weights.length+"x"+weights[0].length);
 		return weights;
 
 		//need to check if there's an empty channel somewhere

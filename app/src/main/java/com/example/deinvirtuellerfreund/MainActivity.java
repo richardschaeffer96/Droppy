@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
+import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
 import com.example.voice.TFLiteClassifier;
@@ -118,12 +119,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+//    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
 
-    {
+  //  {
         // permission not granted, initiate request
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-    }
+      //  ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+    //}
 
         /*
 
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        tflite.recognize(mels);
+                        tflite.recognize(mels,"model_emodb.lite");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -548,7 +549,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void gameThree() {
-
+        setContentView(R.layout.minigame_instruction_cheer_dropsy);
+        new Instruction_ChearDropsy(this);
     }
 
 

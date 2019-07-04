@@ -6,7 +6,6 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.widget.TextView;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -89,7 +88,6 @@ public class RecordHelper {
         while (isRecording) {
             // gets the voice output from microphone to byte format
             recorder.read(sData, 0, BufferElements2Rec);
-            System.out.println("Short wirting to file" + sData.toString());
             try {
                 // // writes the data to file from buffer
                 // // stores the voice buffer
@@ -150,7 +148,7 @@ public class RecordHelper {
             e.printStackTrace();
         }
         // Set and push to audio track..
-        int intSize = android.media.AudioTrack.getMinBufferSize(
+        int intSize = AudioTrack.getMinBufferSize(
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS_OUT, RECORDER_AUDIO_ENCODING);
         AudioTrack at = new AudioTrack(
                 AudioManager.STREAM_MUSIC, RECORDER_SAMPLERATE, RECORDER_CHANNELS_OUT, RECORDER_AUDIO_ENCODING,
@@ -203,24 +201,7 @@ public class RecordHelper {
                 input.close();
             }
         }
-        DataOutputStream output = null;
-        try {
-            output = new DataOutputStream(new FileOutputStream(waveFile));
-            // WAVE header
-            // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
-            writeString(output, "RIFF"); // chunk id
-            writeInt(output, 36 + rawData.length); // chunk size
-            writeString(output, "WAVE"); // format
-            writeString(output, "fmt "); // subchunk 1 id
-            writeInt(output, 16); // subchunk 1 size
-            writeShort(output, (short) 1); // audio format (1 = PCM)
-            writeShort(output, (short) 1); // number of channels
-            writeInt(output, 44100); // sample rate
-            writeInt(output, RECORDER_SAMPLERATE * 2); // byte rate
-            writeShort(output, (short) 2); // block align
-            writeShort(output, (short) 16); // bits per sample
-            writeString(output, "data"); // subchunk 2 id
-            writeInt(output, rawData.length); // subchunk 2 size
+
             // Audio data (conversion big endian -> little endian)
             shorts = new short[rawData.length / 2];
             ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
@@ -228,12 +209,7 @@ public class RecordHelper {
             for (short s : shorts) {
                 bytes.putShort(s);
             }
-            output.write(fullyReadFileToBytes(rawFile));
-        } finally {
-            if (output != null) {
-                output.close();
-            }
-        }
+
         return shorts;
     }
 

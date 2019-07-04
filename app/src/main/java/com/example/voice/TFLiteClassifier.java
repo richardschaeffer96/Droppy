@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.ColorSpace;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
-import com.example.deinvirtuellerfreund.R;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -23,35 +19,12 @@ public class TFLiteClassifier {
 
     private Interpreter tflite;
 
-    private String[]emotions={"angry","happy","neutral","sad"};
-
 
     public TFLiteClassifier(Activity activity) {
         this.activity=activity;
     }
 
     private Activity activity;
-
-
-    // Recognizing Audio
-    public void recognize(float[][] mels) {
-
-        String modelFile="model_emodb.lite";
-        try {
-            tflite = new Interpreter(loadModelFile(activity, modelFile));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        float[][][] inp=new float[1][][];
-        inp[0]=mels;
-        float[][] out=new float[1][4];
-        tflite.run(inp,out);
-
-        Droppie droppie=new Droppie(activity);
-        droppie.changeEmotion(droppie.getEmotion(out[0]));
-    }
 
     // Recognizing Images
     public void recognizeImage(Bitmap scaledBMP) {
@@ -72,7 +45,7 @@ public class TFLiteClassifier {
             int x=0;
             while(x<width) {
                 int col=scaledBMP.getPixel(x,y);
-                inp[0][y][x][0]=(float)Color.red(col)/255f;
+                inp[0][y][x][0]=(float) Color.red(col)/255f;
                 inp[0][y][x][1]=(float)Color.green(col)/255f;
                 inp[0][y][x][2]=(float)Color.blue(col)/255f;
                 x++;
@@ -89,6 +62,46 @@ public class TFLiteClassifier {
     }
 
 
+
+    // Recognizing
+    public int recognize(float[][] mels,String modelFile) {
+        try {
+            tflite = new Interpreter(loadModelFile(activity, modelFile));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        float[][][] inp=new float[1][][];
+        inp[0]=mels;
+        float[][] out=new float[1][3];
+        tflite.run(inp,out);
+
+        for (int i=0; i<out.length;i++){
+            for(int j=0; j<out[i].length;j++){
+
+            }
+        }
+        return getMaxIndex(out[0]);
+    }
+
+    private int getMaxIndex(float[]array) {
+        int i=0;
+        float max=0;
+        int maxInd=0;
+        while(i<array.length) {
+            if(array[i]>max) {
+                max=array[i];
+                maxInd=i;
+            }
+            i++;
+        }
+        return maxInd;
+    }
+
+    private Emotion getEmotion(float[]array) {
+        int maxInd=getMaxIndex(array);
+        return Emotion.values()[maxInd];
+    }
 
 
     private String arrayToString(float[]array) {
