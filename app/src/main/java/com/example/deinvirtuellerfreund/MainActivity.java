@@ -62,6 +62,18 @@ import java.util.Locale;
 import org.apache.http.util.EncodingUtils;
 
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
+
+
+
 public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
 
     private RecordHelper recordHelper;
@@ -112,18 +124,25 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_CAMERA = 1;
     private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
 
+
+    private static float DownX = 0;
+    private static float DownY = 0;
+    private static float moveX = 0;
+    private static float moveY = 0;
+    private static long currentMS = 0;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-
-    {
-        // permission not granted, initiate request
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-    }
+//    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+//
+//    {
+//        // permission not granted, initiate request
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+//    }
 
         /*
 
@@ -168,27 +187,90 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         collisionbox = findViewById(R.id.collisionbox);
 
         //TODO HELING
+//        collisionbox.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int X = (int) event.getRawX();
+//                final int Y = (int) event.getRawY();
+//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        break;
+//                    case MotionEvent.ACTION_POINTER_DOWN:
+//                        break;
+//                    case MotionEvent.ACTION_POINTER_UP:
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+//        private void setGestureListener(){
+//            collisionbox.setOnTouchListener(new OnTouchListener() {
+//
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//
+//                    switch (event.getAction()) {
+//
+//                        case MotionEvent.ACTION_DOWN:
+//                            mPosX = event.getX();
+//                            mPosY = event.getY();
+//                            break;
+//                        case MotionEvent.ACTION_MOVE:
+//                            mCurPosX = event.getX();
+//                            mCurPosY = event.getY();
+//
+//                            break;
+//                        case MotionEvent.ACTION_UP:
+//                            if (mCurPosY - mPosY > 0
+//                                    && (Math.abs(mCurPosY - mPosY) > 25)) {
+//                                //向下滑動
+//
+//                            } else if (mCurPosY - mPosY < 0
+//                                    && (Math.ab s(mCurPosY - mPosY) > 25)) {
+//                                //向上滑动
+//                                collapse();
+//                            }
+//
+//                            break;
+//                    }
+//                    return true;
+//                }
+//
+//            });
+        //}
         collisionbox.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int X = (int) event.getRawX();
-                final int Y = (int) event.getRawY();
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP:
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                }
-                return true;
-            }
-        });
-
+         @Override
+         public boolean onTouch(View v, MotionEvent event) {
+              switch (event.getAction()) {
+                  case MotionEvent.ACTION_DOWN:
+                      DownX = event.getX();//float DownX
+                      DownY = event.getY();//float DownY
+                      moveX = 0;
+                      moveY = 0;
+                      currentMS = System.currentTimeMillis();//long currentMS     获取系统时间
+                      break;
+                 case MotionEvent.ACTION_MOVE:
+                     moveX += Math.abs(event.getX() - DownX);//X轴距离
+                     moveY += Math.abs(event.getY() - DownY);//y轴距离
+                     DownX = event.getX();
+                     DownY = event.getY();
+                     break;
+                 case MotionEvent.ACTION_UP:
+                     long moveTime = System.currentTimeMillis() - currentMS;//移动时间
+                     //判断是否继续传递信号
+                     if(moveTime>200&&(moveX>20||moveY>20)){
+                         System.out.println("this ist a moveevent");
+                         return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
+                                                 } else { System.out.println("this is a tagevent");}
+                     break;
+                               }
+                             return false;//继续执行后面的代码
+                        }
+     });
         //droppy.setTouchListener oder .setMotionListener
 
         info_overlay = new Dialog(this);
