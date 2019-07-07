@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_RECORD_AUDIO = 1;
     private static final int REQUEST_CAMERA = 1;
     private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
+    static Camera camera = null;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -118,16 +119,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-
-    {
-        // permission not granted, initiate request
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-    }
-
-        /*
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // permission not granted, initiate request
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
@@ -144,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
         }
 
-        */
+
 
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
