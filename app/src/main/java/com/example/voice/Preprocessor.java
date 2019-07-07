@@ -1,8 +1,8 @@
 package com.example.voice;
 
-import java.util.Arrays;
-
 import com.example.voice.mfcc.MFCC;
+
+import java.util.Arrays;
 
 public class Preprocessor {
 
@@ -30,7 +30,7 @@ public class Preprocessor {
         //
         float s_len=signal.length;
         // Empirically calculated mean length for the given data set (2 seconds)
-        float mean_signal_length=32000; // 16kHz*2secs=32kHz
+        float mean_signal_length=16000; // 16kHz*1sec=16kHz
         //    # pad/slice the signals to have same size if lesser than required
         //    if s_len < mean_signal_length:
         //        pad_len = mean_signal_length - s_len
