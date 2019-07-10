@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
+import com.example.screens.FoodScreen;
 import com.example.screens.Instruction_AnimalSounds;
 import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
@@ -646,7 +647,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void gameTwo() {
-        startActivity(new Intent(MainActivity.this, FoodActivity.class));
+        setContentView(R.layout.minigame_instruction_cheer_dropsy);
+        new FoodScreen(this);
     }
 
     public void gameThree() {
