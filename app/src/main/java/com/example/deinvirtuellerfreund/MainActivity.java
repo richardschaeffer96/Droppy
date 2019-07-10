@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -50,6 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 
 import java.io.File;
@@ -60,6 +62,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
+
 import org.apache.http.util.EncodingUtils;
 
 
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Dialog info_overlay;
     ProgressBar level_bar;
     TextView level_number;
+    Field[] fields;
+    Boolean new_joke = true;
 
     //BODY OF DROPPY
     ImageView droppy;
@@ -140,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
 
 
-
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
 
@@ -161,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         eyes = findViewById(R.id.droppy_eyes);
         mouth = findViewById(R.id.droppy_mouth);
         collisionbox = findViewById(R.id.collisionbox);
+
+        listRaw();
 
         //TODO HELING
         collisionbox.setOnTouchListener(new View.OnTouchListener() {
@@ -509,7 +516,18 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void jokeChallenge() {
         if (player == null) {
-            player = MediaPlayer.create(this, R.raw.nerdwitz);
+
+            Random r = new Random();
+
+            int i = r.nextInt((fields.length)-1-+1)+1;
+
+            String jokeString = "joke" + i;
+
+            System.out.println("Witz: " + jokeString);
+
+            Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
+
+            player = MediaPlayer.create(this, uri);
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -518,11 +536,20 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     droppie.changeEmotion(Emotion.Happiness);
                 }
             });
-        }
 
-        player.start();
-        changeLevel();
+            player.start();
+            changeLevel();
+        }
     }
+
+    public void listRaw(){
+        fields=R.raw.class.getFields();
+        for(int count=0; count < fields.length; count++){
+            Log.i("Raw Asset: ", fields[count].getName());
+        }
+    }
+
+
 
     private void stopPlayer() {
         if (player != null) {
