@@ -59,7 +59,21 @@ public class FoodActivity extends AppCompatActivity {
         info_overlay = new Dialog(this);
         cheerScreen = new Dialog(this);
 
+}
+
+/*
+
+    private void showInfo() {
+        info_overlay.setContentView(R.layout.info_overlay);
+        info_overlay.show();
+        TextView infoHeadline = (TextView) info_overlay.findViewById(R.id.info_headline);
+        TextView infoText = info_overlay.findViewById(R.id.info_text);
+        infoHeadline.setText("Füttere Dropsy!");
+        infoText.setText("Gib Dropsy einen Apfel um eure Freundschaft weiter zu stärken! Aber Vorsicht, zwei der" +
+                "drei Äpfel sind vergammelt. Wenn du Dropsy keinen guten Apfel gibst, musst du ihn" +
+                "mit deinem Lachen anstecken, um sein Vertrauen zurück zu gewinnen!");
     }
+*/
 
     public void goBack(View v) {
         finish();
@@ -81,12 +95,12 @@ public class FoodActivity extends AppCompatActivity {
     public void feedApple(View view) {
         int num = Integer.parseInt((String) number.getText());
         if (isRottenApple) {
-            if (num > 0){
+            if (num > 0) {
                 String numb = Integer.toString(num - 1);
                 number.setText(numb);
             }
+
             info_overlay.setContentView(R.layout.info_overlay);
-         //   info_overlay.getWindow().findViewById(android.R.id.content);
             info_overlay.show();
             TextView infoHeadline = (TextView) info_overlay.findViewById(R.id.info_headline);
             TextView infoText = info_overlay.findViewById(R.id.info_text);
@@ -111,7 +125,7 @@ public class FoodActivity extends AppCompatActivity {
         }
     }
 
-    public void close(View v){
+    public void close(View v) {
         info_overlay.hide();
         cheerScreen.setContentView(R.layout.minigame_cheer_dropsy);
         cheerScreen.show();

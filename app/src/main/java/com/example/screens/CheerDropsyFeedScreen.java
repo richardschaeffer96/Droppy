@@ -39,7 +39,7 @@ public class CheerDropsyFeedScreen implements Runnable {
     private Droppie droppie;
 
     private String[]startCondition={"wütend","traurig"};
-    private String[]emotions={"lachen","stille","reden"};
+    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
     private String modelFile="lachen_stille_reden.lite";
     private int startInd=0;
 
@@ -67,7 +67,7 @@ public class CheerDropsyFeedScreen implements Runnable {
     private void evaluateEmotion(int ind) {
         String em=emotions[ind];
         System.out.println(em);
-        boolean success= em.equals("lachen");
+        boolean success = em.equals("lachen");
 
         if(success) {
             int cur=progressBar.getProgress()+1;
