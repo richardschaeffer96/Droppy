@@ -40,6 +40,14 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
     private int rotation;
     private Set<Graphic> mGraphics = new HashSet();
 
+
+
+    public static boolean camera_active = true;
+    public static boolean delay_active = true;
+
+    private double time=System.currentTimeMillis();
+    private double dTime;
+
     int left;
     int top;
     int right;
@@ -95,32 +103,79 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Object var2 = this.mLock;
-        synchronized(this.mLock) {
-            if (this.mPreviewWidth != 0 && this.mPreviewHeight != 0) {
-                this.mWidthScaleFactor = (float)canvas.getWidth() / (float)this.mPreviewWidth;
-                this.mHeightScaleFactor = (float)canvas.getHeight() / (float)this.mPreviewHeight;
+
+        if(camera_active==false){
+
+        }else {
+            if(delay_active==false){
+
+                Object var2 = this.mLock;
+                synchronized (this.mLock) {
+                    if (this.mPreviewWidth != 0 && this.mPreviewHeight != 0) {
+                        this.mWidthScaleFactor = (float) canvas.getWidth() / (float) this.mPreviewWidth;
+                        this.mHeightScaleFactor = (float) canvas.getHeight() / (float) this.mPreviewHeight;
+                    }
+
+                    Iterator var3 = this.mGraphics.iterator();
+
+                    while (var3.hasNext()) {
+                        GraphicOverlay.Graphic graphic = (GraphicOverlay.Graphic) var3.next();
+                        graphic.draw(canvas);
+                        left = Math.round(graphic.getLeft());
+                        right = Math.round(graphic.getRight());
+                        top = Math.round(graphic.getTop());
+                        bottom = Math.round(graphic.getBottom());
+                        x = Math.round(graphic.getX());
+                        y = Math.round(graphic.getY());
+                        width = Math.round(graphic.getWidth());
+                        height = Math.round(graphic.getHeight());
+                        x_face = Math.round(graphic.getX_face());
+                        y_face = Math.round(graphic.getY_face());
+                        //add delay mit if
+                        takephoto();
+                    }
+
+                }
+
+            }else {
+
+                //TODO ADD DELAY
+                double curTime=System.currentTimeMillis();
+                dTime+=curTime-time;
+                time=curTime;
+                if(dTime>5000f){
+                    dTime=0;
+                    Object var2 = this.mLock;
+                    synchronized (this.mLock) {
+                        if (this.mPreviewWidth != 0 && this.mPreviewHeight != 0) {
+                            this.mWidthScaleFactor = (float) canvas.getWidth() / (float) this.mPreviewWidth;
+                            this.mHeightScaleFactor = (float) canvas.getHeight() / (float) this.mPreviewHeight;
+                        }
+
+                        Iterator var3 = this.mGraphics.iterator();
+
+                        while (var3.hasNext()) {
+                            GraphicOverlay.Graphic graphic = (GraphicOverlay.Graphic) var3.next();
+                            graphic.draw(canvas);
+                            left = Math.round(graphic.getLeft());
+                            right = Math.round(graphic.getRight());
+                            top = Math.round(graphic.getTop());
+                            bottom = Math.round(graphic.getBottom());
+                            x = Math.round(graphic.getX());
+                            y = Math.round(graphic.getY());
+                            width = Math.round(graphic.getWidth());
+                            height = Math.round(graphic.getHeight());
+                            x_face = Math.round(graphic.getX_face());
+                            y_face = Math.round(graphic.getY_face());
+                            //add delay mit if
+                            takephoto();
+                        }
+
+                    }
+                }
+
+
             }
-
-            Iterator var3 = this.mGraphics.iterator();
-
-            while(var3.hasNext()) {
-                GraphicOverlay.Graphic graphic = (GraphicOverlay.Graphic)var3.next();
-                graphic.draw(canvas);
-                left = Math.round(graphic.getLeft());
-                right = Math.round(graphic.getRight());
-                top = Math.round(graphic.getTop());
-                bottom = Math.round(graphic.getBottom());
-                x = Math.round(graphic.getX());
-                y = Math.round(graphic.getY());
-                width = Math.round(graphic.getWidth());
-                height = Math.round(graphic.getHeight());
-                x_face = Math.round(graphic.getX_face());
-                y_face = Math.round(graphic.getY_face());
-                //add delay mit if
-                takephoto();
-            }
-
         }
     }
 
@@ -271,6 +326,22 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 
+    }
+
+    public static boolean isCamera_active() {
+        return camera_active;
+    }
+
+    public static void setCamera_active(boolean camera_active) {
+        GraphicOverlay.camera_active = camera_active;
+    }
+
+    public static boolean isDelay_active() {
+        return delay_active;
+    }
+
+    public static void setDelay_active(boolean delay_active) {
+        GraphicOverlay.delay_active = delay_active;
     }
 
     public abstract static class Graphic {
