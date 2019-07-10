@@ -252,8 +252,13 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
                         System.out.println("Bild ist: " + scaledBmp.toString());
 
                         //TO-DO: scaledBmp is the image you have to compare with the database.
-                        TFLiteClassifier tflite=new TFLiteClassifier(MainActivity.activity);
-                        tflite.recognizeImage(scaledBmp);
+                        if(delay_active==true) {
+                            TFLiteClassifier tflite = new TFLiteClassifier(MainActivity.activity);
+                            tflite.recognizeImage(scaledBmp);
+                        } else {
+                            TFLiteClassifier tflite = new TFLiteClassifier(MainActivity.activity);
+                            tflite.checkIfLaughing(scaledBmp);
+                        }
 
                         FileOutputStream fout = new FileOutputStream(imageFile);
                         fout.write(ostream.toByteArray());
