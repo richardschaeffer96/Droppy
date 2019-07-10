@@ -39,7 +39,7 @@ public class CheerDropsyScreen implements Runnable {
     private Droppie droppie;
 
     private String[]startCondition={"wütend","traurig"};
-    private String[]emotions={"lachen","stille","reden"};
+    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
     private String modelFile="lachen_stille_reden.lite";
     private int startInd=0;
 
@@ -65,6 +65,7 @@ public class CheerDropsyScreen implements Runnable {
             System.out.println("START RECORDING");
             recordHelper.startRecording();
         }
+
     }
 
     // Nach Aufnahme wird Emotion ausgewertet
