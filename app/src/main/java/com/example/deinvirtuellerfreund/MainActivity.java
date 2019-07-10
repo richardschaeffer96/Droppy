@@ -35,7 +35,6 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
-import com.example.screens.FoodScreen;
 import com.example.screens.Instruction_AnimalSounds;
 import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
@@ -62,6 +61,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -84,10 +85,14 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     MediaPlayer player;
     Dialog info_overlay;
-    ProgressBar level_bar;
+    public static ProgressBar level_bar;
     TextView level_number;
+    TextView level_header;
     Field[] fields;
     Boolean new_joke = true;
+    ArrayList<String> jokes = new ArrayList<String>();
+    Integer jokecount = 0;
+    public static Integer jokeProgress = 100;
 
     //BODY OF DROPPY
     ImageView droppy;
@@ -98,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     ImageView talk;
     ImageView eat;
+    ImageView info;
     Typeface weatherFont;
     TextView weather_icon;
     String city = "80331";
@@ -147,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
         }
 
+        level_header = findViewById(R.id.level_header);
 
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
@@ -198,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
         eat = findViewById(R.id.Button_Eat);
+        info = findViewById(R.id.Button_Info);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weather_icon = findViewById(R.id.weather_icon);
         weather_icon.setTypeface(weatherFont);
@@ -252,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        tflite.recognize(mels,"model_emodb.lite", 4);
+                        tflite.recognize(mels,"model_emodb.lite",4);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -451,18 +459,16 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             public boolean onMenuItemClick(MenuItem item) {
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
-                    case "game1":
-                        droppie.changeEmotion(Emotion.Talking);
-                        mouth.startAnimation(animTalking);
-                        jokeChallenge();
+                    case "Witze":
+                        preJokeChallenge();
                         break;
-                    case "game2":
+                    case "Essen":
                         gameTwo();
                         break;
-                    case "game3":
+                    case "Aufmuntern":
                         gameThree();
                         break;
-                    case "game4":
+                    case "Tiergeräusche":
                         gameFour();
                         break;
                 }
@@ -519,30 +525,100 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
     }
 
+    public void preJokeChallenge(){
+        for(int i=0; i<fields.length; i++){
+            jokes.add(fields[i].getName());
+        }
+
+        Collections.shuffle(jokes);
+
+
+        GraphicOverlay.delay_active=false;
+
+        jokeChallenge();
+    }
+
     public void jokeChallenge() {
-        if (player == null) {
 
-            Random r = new Random();
+        if(jokeProgress<=0){
+            jokecount=3;
+        }
 
-            int i = r.nextInt((fields.length)-1-+1)+1;
+        setJokeView();
 
-            String jokeString = "joke" + i;
+        int max_jokes = 3;
 
-            System.out.println("Witz: " + jokeString);
+        if(jokecount==max_jokes){
+            GraphicOverlay.delay_active=true;
+            deleteJokeView(jokeProgress);
+        }
 
-            Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
+        if(jokecount<max_jokes){
 
-            player = MediaPlayer.create(this, uri);
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    stopPlayer();
-                    mouth.startAnimation(animMouth);
-                    droppie.changeEmotion(Emotion.Happiness);
-                }
-            });
+            if (player == null) {
 
-            player.start();
+                String jokeString = jokes.get(0);
+                jokes.remove(0);
+
+                System.out.println("Witz: " + jokeString);
+
+                Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
+
+                droppie.changeEmotion(Emotion.Talking);
+                mouth.startAnimation(animTalking);
+
+                player = MediaPlayer.create(this, uri);
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        stopPlayer();
+                        mouth.startAnimation(animMouth);
+                        droppie.changeEmotion(Emotion.Happiness);
+
+                        synchronized (this) {
+                            try {
+                                this.wait(2000);
+                                //TODO MAYBE EVERYTHING FREEZES???
+                                jokecount++;
+                                jokeChallenge();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
+                player.start();
+
+            }
+        }
+    }
+
+    public void setJokeView(){
+        level_header.setText("Durchhaltevermögen");
+        level_number.setVisibility(View.INVISIBLE);
+        weather_icon.setVisibility(View.INVISIBLE);
+        talk.setVisibility(View.INVISIBLE);
+        eat.setVisibility(View.INVISIBLE);
+        info.setVisibility(View.INVISIBLE);
+        level_bar.setProgress(jokeProgress);
+    }
+
+    public void deleteJokeView(Integer progress){
+
+        Double points = progress*0.1;
+        jokeProgress = 100;
+
+        level_header.setText("Level: ");
+        level_number.setVisibility(View.VISIBLE);
+        weather_icon.setVisibility(View.VISIBLE);
+        talk.setVisibility(View.VISIBLE);
+        eat.setVisibility(View.VISIBLE);
+        info.setVisibility(View.VISIBLE);
+        level_bar.setProgress(levelbarauslesen("levelbar.txt"));
+        if(points==0){
+
+        }else{
             changeLevel();
         }
     }
@@ -570,8 +646,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void gameTwo() {
-        setContentView(R.layout.food_game);
-        new FoodScreen(this);
+        startActivity(new Intent(MainActivity.this, FoodActivity.class));
     }
 
     public void gameThree() {
