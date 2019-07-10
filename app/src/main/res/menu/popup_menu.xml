@@ -11,7 +11,11 @@
 
     <item
         android:id="@+id/game3"
-        android:title="game3" />
+        android:title="Aufmuntern" />
+
+    <item
+        android:id="@+id/game4"
+        android:title="Tiergeräusche"/>
 
 
 </menu>
