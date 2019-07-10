@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     TextView level_number;
     Field[] fields;
     Boolean new_joke = true;
+    ArrayList<String> jokes = new ArrayList<String>();
+    Integer jokecount = 0;
 
     //BODY OF DROPPY
     ImageView droppy;
@@ -452,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
                     case "game1":
-                        jokeChallenge();
+                        preJokeChallenge();
                         break;
                     case "game2":
                         gameTwo();
@@ -514,17 +516,19 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
     }
 
-    public void jokeChallenge() {
-
-        ArrayList<String> jokes = new ArrayList<String>();
+    public void preJokeChallenge(){
         for(int i=0; i<fields.length; i++){
             jokes.add(fields[i].getName());
         }
 
         Collections.shuffle(jokes);
 
-        int m = 1;
-        while(m<6){
+        jokeChallenge();
+    }
+
+    public void jokeChallenge() {
+
+        if(jokecount<3){
             if (player == null) {
 
                 String jokeString = jokes.get(0);
@@ -548,6 +552,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         synchronized (this) {
                             try {
                                 this.wait(2000);
+                                //TODO MAYBE EVERYTHING FREEZES???
+                                jokecount++;
+                                jokeChallenge();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -557,10 +564,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
                 player.start();
                 changeLevel();
-            }
-            m++;
-        }
 
+            }
+        }
     }
 
     public void listRaw(){
