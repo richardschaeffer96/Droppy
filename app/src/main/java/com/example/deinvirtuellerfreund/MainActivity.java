@@ -60,6 +60,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -450,8 +452,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
                     case "game1":
-                        droppie.changeEmotion(Emotion.Talking);
-                        mouth.startAnimation(animTalking);
                         jokeChallenge();
                         break;
                     case "game2":
@@ -515,31 +515,52 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void jokeChallenge() {
-        if (player == null) {
 
-            Random r = new Random();
-
-            int i = r.nextInt((fields.length)-1-+1)+1;
-
-            String jokeString = "joke" + i;
-
-            System.out.println("Witz: " + jokeString);
-
-            Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
-
-            player = MediaPlayer.create(this, uri);
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    stopPlayer();
-                    mouth.startAnimation(animMouth);
-                    droppie.changeEmotion(Emotion.Happiness);
-                }
-            });
-
-            player.start();
-            changeLevel();
+        ArrayList<String> jokes = new ArrayList<String>();
+        for(int i=0; i<fields.length; i++){
+            jokes.add(fields[i].getName());
         }
+
+        Collections.shuffle(jokes);
+
+        int m = 1;
+        while(m<6){
+            if (player == null) {
+
+                String jokeString = jokes.get(0);
+                jokes.remove(0);
+
+                System.out.println("Witz: " + jokeString);
+
+                Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
+
+                droppie.changeEmotion(Emotion.Talking);
+                mouth.startAnimation(animTalking);
+
+                player = MediaPlayer.create(this, uri);
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        stopPlayer();
+                        mouth.startAnimation(animMouth);
+                        droppie.changeEmotion(Emotion.Happiness);
+
+                        synchronized (this) {
+                            try {
+                                this.wait(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
+                player.start();
+                changeLevel();
+            }
+            m++;
+        }
+
     }
 
     public void listRaw(){
