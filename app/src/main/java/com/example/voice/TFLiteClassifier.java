@@ -26,6 +26,22 @@ public class TFLiteClassifier {
 
     private Activity activity;
 
+    // Recognizing
+    public int recognize(float[][] mels,String modelFile,int outputSize) {
+        try {
+            tflite = new Interpreter(loadModelFile(activity, modelFile));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        float[][][] inp=new float[1][][];
+        inp[0]=mels;
+        float[][] out=new float[1][outputSize];
+        tflite.run(inp,out);
+        return getMaxIndex(out[0]);
+    }
+
+
     // Recognizing Images
     public void recognizeImage(Bitmap scaledBMP) {
         System.out.println("START IMAGE RECOGNITION");
@@ -61,28 +77,6 @@ public class TFLiteClassifier {
 
     }
 
-
-
-    // Recognizing
-    public int recognize(float[][] mels,String modelFile) {
-        try {
-            tflite = new Interpreter(loadModelFile(activity, modelFile));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        float[][][] inp=new float[1][][];
-        inp[0]=mels;
-        float[][] out=new float[1][3];
-        tflite.run(inp,out);
-
-        for (int i=0; i<out.length;i++){
-            for(int j=0; j<out[i].length;j++){
-
-            }
-        }
-        return getMaxIndex(out[0]);
-    }
 
     private int getMaxIndex(float[]array) {
         int i=0;
