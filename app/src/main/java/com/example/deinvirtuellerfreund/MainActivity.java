@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        tflite.recognize(mels,"model_emodb.lite");
+                        tflite.recognize(mels,"model_emodb.lite",4);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -522,6 +522,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
 
         Collections.shuffle(jokes);
+
+        //TODO lol
 
         jokeChallenge();
     }
