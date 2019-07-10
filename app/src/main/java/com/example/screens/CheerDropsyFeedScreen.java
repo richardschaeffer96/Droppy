@@ -99,7 +99,7 @@ public class CheerDropsyFeedScreen implements Runnable {
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        int ind=tflite.recognize(mels,modelFile);
+                        int ind=tflite.recognize(mels,modelFile,emotions.length);
                         evaluateEmotion(ind);
                     }
                 }

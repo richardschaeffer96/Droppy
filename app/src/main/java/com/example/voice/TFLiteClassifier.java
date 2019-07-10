@@ -7,6 +7,8 @@ import android.graphics.Color;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
+import com.example.deinvirtuellerfreund.MainActivity;
+import com.example.screens.JokeChallenge;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -110,6 +112,9 @@ public class TFLiteClassifier {
 
         int ind=getMaxIndex(out[0]);
         if(Emotion.values()[ind]==Emotion.Happiness) {
+            MainActivity.jokeProgress -= 10;
+            MainActivity.level_bar.setProgress(MainActivity.jokeProgress);
+            System.out.println("!!!!!! Jokeprogress ist: " + MainActivity.jokeProgress);
             // TODO: RICHARD: auf public static int zugreifen und -- nehmen.
         }
     }

@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/game1"
-        android:title="game1" />
+        android:title="Witze" />
 
     <item
         android:id="@+id/game2"
-        android:title="game2" />
+        android:title="Essen" />
 
     <item
         android:id="@+id/game3"

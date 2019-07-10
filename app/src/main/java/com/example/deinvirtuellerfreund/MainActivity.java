@@ -85,12 +85,14 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     MediaPlayer player;
     Dialog info_overlay;
-    ProgressBar level_bar;
+    public static ProgressBar level_bar;
     TextView level_number;
+    TextView level_header;
     Field[] fields;
     Boolean new_joke = true;
     ArrayList<String> jokes = new ArrayList<String>();
     Integer jokecount = 0;
+    public static Integer jokeProgress = 100;
 
     //BODY OF DROPPY
     ImageView droppy;
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     ImageView talk;
     ImageView eat;
+    ImageView info;
     Typeface weatherFont;
     TextView weather_icon;
     String city = "80331";
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
         }
 
+        level_header = findViewById(R.id.level_header);
 
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
@@ -201,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
         eat = findViewById(R.id.Button_Eat);
+        info = findViewById(R.id.Button_Info);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weather_icon = findViewById(R.id.weather_icon);
         weather_icon.setTypeface(weatherFont);
@@ -454,16 +459,16 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             public boolean onMenuItemClick(MenuItem item) {
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
-                    case "game1":
+                    case "Witze":
                         preJokeChallenge();
                         break;
-                    case "game2":
+                    case "Essen":
                         gameTwo();
                         break;
-                    case "game3":
+                    case "Aufmuntern":
                         gameThree();
                         break;
-                    case "game4":
+                    case "Tiergeräusche":
                         gameFour();
                         break;
                 }
@@ -527,14 +532,29 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         Collections.shuffle(jokes);
 
-        //TODO lol
+
+        GraphicOverlay.delay_active=false;
 
         jokeChallenge();
     }
 
     public void jokeChallenge() {
 
-        if(jokecount<3){
+        if(jokeProgress<=0){
+            jokecount=3;
+        }
+
+        setJokeView();
+
+        int max_jokes = 3;
+
+        if(jokecount==max_jokes){
+            GraphicOverlay.delay_active=true;
+            deleteJokeView(jokeProgress);
+        }
+
+        if(jokecount<max_jokes){
+
             if (player == null) {
 
                 String jokeString = jokes.get(0);
@@ -569,9 +589,37 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 });
 
                 player.start();
-                changeLevel();
 
             }
+        }
+    }
+
+    public void setJokeView(){
+        level_header.setText("Durchhaltevermögen");
+        level_number.setVisibility(View.INVISIBLE);
+        weather_icon.setVisibility(View.INVISIBLE);
+        talk.setVisibility(View.INVISIBLE);
+        eat.setVisibility(View.INVISIBLE);
+        info.setVisibility(View.INVISIBLE);
+        level_bar.setProgress(jokeProgress);
+    }
+
+    public void deleteJokeView(Integer progress){
+
+        Double points = progress*0.1;
+        jokeProgress = 100;
+
+        level_header.setText("Level: ");
+        level_number.setVisibility(View.VISIBLE);
+        weather_icon.setVisibility(View.VISIBLE);
+        talk.setVisibility(View.VISIBLE);
+        eat.setVisibility(View.VISIBLE);
+        info.setVisibility(View.VISIBLE);
+        level_bar.setProgress(levelbarauslesen("levelbar.txt"));
+        if(points==0){
+
+        }else{
+            changeLevel();
         }
     }
 
