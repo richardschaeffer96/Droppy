@@ -570,7 +570,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void gameTwo() {
         startActivity(new Intent(MainActivity.this, FoodActivity.class));
-
     }
 
     public void gameThree() {
