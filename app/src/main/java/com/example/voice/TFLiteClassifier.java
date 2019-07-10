@@ -78,6 +78,43 @@ public class TFLiteClassifier {
     }
 
 
+    // Recognizing Images
+    public void checkIfLaughing(Bitmap scaledBMP) {
+        System.out.println("START IMAGE RECOGNITION");
+        String modelFile="fer2013_model.lite";
+        try {
+            tflite = new Interpreter(loadModelFile(activity, modelFile));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int height=scaledBMP.getHeight();
+        int width=scaledBMP.getWidth();
+        float[][][][] inp=new float[1][height][width][3];
+        int y=0;
+        while(y<height) {
+            int x=0;
+            while(x<width) {
+                int col=scaledBMP.getPixel(x,y);
+                inp[0][y][x][0]=(float) Color.red(col)/255f;
+                inp[0][y][x][1]=(float)Color.green(col)/255f;
+                inp[0][y][x][2]=(float)Color.blue(col)/255f;
+                x++;
+            }
+            y++;
+        }
+        //
+        float[][] out=new float[1][4];
+        tflite.run(inp,out);
+
+        int ind=getMaxIndex(out[0]);
+        if(Emotion.values()[ind]==Emotion.Happiness) {
+            // TODO: RICHARD: auf public static int zugreifen und -- nehmen.
+        }
+    }
+
+
     private int getMaxIndex(float[]array) {
         int i=0;
         float max=0;
