@@ -13,6 +13,7 @@ import com.example.deinvirtuellerfreund.R;
 
 import java.util.Random;
 
+//Minigame Essen
 public class FoodScreen {
 
     private TextView number;
