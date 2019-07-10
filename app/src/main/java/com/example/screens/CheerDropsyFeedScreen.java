@@ -143,7 +143,7 @@ public class CheerDropsyFeedScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_food);
+                                activity.setContentView(R.layout.food_game);
                             }
                         });
                         break;

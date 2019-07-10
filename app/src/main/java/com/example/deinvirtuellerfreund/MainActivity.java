@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
+import com.example.screens.FoodScreen;
 import com.example.screens.Instruction_AnimalSounds;
 import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
@@ -251,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        tflite.recognize(mels,"model_emodb.lite");
+                        tflite.recognize(mels,"model_emodb.lite", 4);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -569,7 +570,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void gameTwo() {
-        startActivity(new Intent(MainActivity.this, FoodActivity.class));
+        setContentView(R.layout.food_game);
+        new FoodScreen(this);
     }
 
     public void gameThree() {
