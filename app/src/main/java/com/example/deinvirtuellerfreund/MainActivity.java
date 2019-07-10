@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
+import com.example.screens.Instruction_AnimalSounds;
 import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -460,6 +461,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     case "game3":
                         gameThree();
                         break;
+                    case "game4":
+                        gameFour();
+                        break;
                 }
 
           //      Toast.makeText(MainActivity.this, "" + item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -574,7 +578,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         new Instruction_ChearDropsy(this);
     }
 
-
+    public void gameFour() {
+        setContentView(R.layout.minigame_instruction_animals);
+        new Instruction_AnimalSounds(this);
+    }
 
     public void taskLoadUp(String query) {
         if (Function.isNetworkAvailable(getApplicationContext())) {
