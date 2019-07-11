@@ -260,29 +260,22 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         //}
 
         //taskLoadUp(city);
-
-        talk.setOnClickListener(new View.OnClickListener() {
-
+        talk.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (recordHelper.getRecording() == false) {
+                if(recordHelper.getRecording()==false){
                     recordHelper.startRecording();
                     talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro_clicked));
                 } else {
                     recordHelper.stopRecording();
                     talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro));
                     try {
-                        short[] signal = recordHelper.transformToWavData();
-                        Preprocessor prep = new Preprocessor();
-                        float[][] mels = prep.preprocessAudioFile(signal, 39);
-                        TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        tflite.recognize(mels,"model_emodb.lite",4);
+                        short[]signal=recordHelper.transformToWavData();
+                        new HowWasYourDayThread(activity,signal);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
-
             }
         });
 
@@ -493,13 +486,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 return true;
             }
         });
-
         popupMenu.show();
     }
 
     public void changeLevel(Integer score) {
-
-
         if(level_bar.getProgress()!=100){
             Integer add = score + level_bar.getProgress();
             level_bar.setProgress(add);
