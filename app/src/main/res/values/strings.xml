@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DeinVirtuellerFreund</string>
+    <string name="food_headline">Fütter Droppy!</string>
+    <string name="food_content">Stärke deine Bindung mit Droppy, indem du ihm einen
+    Apfel gibst. Aber Vorsicht! Zwei von den drei versteckten Äpfeln sind vergammelt!
+    Solltest du ihm einen schlechten Apfel füttern, wird Droppy traurig und du verlierst einen
+    Vertrauenspunkt!. Erst wenn du beruhigend auf ihn einredest, gewinnt er sein
+    Vertrauen zurück!</string>
 </resources>

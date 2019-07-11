@@ -36,6 +36,7 @@ import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
 import com.example.screens.FoodScreen;
+import com.example.screens.InfoOverlayScreen;
 import com.example.screens.Instruction_AnimalSounds;
 import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
@@ -716,8 +717,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void gameTwo() {
-        setContentView(R.layout.minigame_instruction_cheer_dropsy);
-        new FoodScreen(this, 0);
+        String headline = getResources().getString(R.string.food_headline);
+        String content = getResources().getString(R.string.food_content);
+        setContentView(R.layout.info_overlay);
+        new InfoOverlayScreen(this, "food", headline, content);
     }
 
     public void gameThree() {

@@ -103,11 +103,7 @@ public class FoodScreen {
 
     private void feedApple() {
         if (isRottenApple) {
-            if (points > 0) {
-                this.points--;
-                String level = Integer.toString(points);
-                number.setText(level);
-            }
+            this.points--;
             droppie.changeEmotion(Emotion.Sadness);
             activity.setContentView(R.layout.minigame_cheer_dropsy);
             new CheerDropsyFeedScreen(activity, points);

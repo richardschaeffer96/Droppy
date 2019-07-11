@@ -22,14 +22,14 @@ public class CheerDropsyFeedScreen implements Runnable {
     private static TextView tvSecs;
     private double time;
     private double dTime;
-    private int secsLeft=10;
+    private int secsLeft = 10;
     private Thread clockThread = null;
     private RecordHelper recordHelper;
     private Droppie droppie;
     private boolean won = false;
 
-    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
-    private String modelFile="lachen_stille_reden.lite";
+    private String[] emotions = {"lachen", "stille", "reden", "klopfen", "gähnen", "husten"};
+    private String modelFile = "lachen_stille_reden.lite";
 
     public CheerDropsyFeedScreen(Activity activity, int points) {
         this.activity = activity;
@@ -38,23 +38,23 @@ public class CheerDropsyFeedScreen implements Runnable {
         tvSecs = activity.findViewById(R.id.seconds_left);
         tvSecs.setText(secsLeft + " s");
         time = System.currentTimeMillis();
-        recordHelper=new RecordHelper(activity);
+        recordHelper = new RecordHelper(activity);
         initStartCondition();
         start();
     }
 
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
-        progressBar=activity.findViewById(R.id.emotion_bar);
+        progressBar = activity.findViewById(R.id.emotion_bar);
         progressBar.setMax(7);
         progressBar.setProgress(1);
-        droppie=new Droppie(activity);
+        droppie = new Droppie(activity);
         droppie.changeEmotion(Emotion.Sadness);
     }
 
     // Nimmt einen beim Sprechen auf
     private void startRecording() {
-        if(recordHelper.getRecording()==false){
+        if (recordHelper.getRecording() == false) {
             System.out.println("START RECORDING");
             recordHelper.startRecording();
         }
@@ -63,15 +63,15 @@ public class CheerDropsyFeedScreen implements Runnable {
     // Nach Aufnahme wird Emotion ausgewertet
     // Je nach Startsetting (wütend oder traurig) erhält man für REDEN oder LACHEN Punkte
     private void evaluateEmotion(int ind) {
-        String em=emotions[ind];
+        String em = emotions[ind];
         System.out.println(em);
         boolean success = em.equals("reden");
 
-        if(success) {
-            int cur=progressBar.getProgress()+1;
-            if(cur==2) {
+        if (success) {
+            int cur = progressBar.getProgress() + 1;
+            if (cur == 2) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==4) {
+            } else if (cur == 4) {
                 droppie.changeEmotion(Emotion.Happiness);
                 won = true;
             }
@@ -82,7 +82,7 @@ public class CheerDropsyFeedScreen implements Runnable {
 
     // Beende Aufnahme, starte Aufbereitung der Daten und Beginne Auswertung
     private void stopRecording() {
-        if(recordHelper.getRecording()==true) {
+        if (recordHelper.getRecording() == true) {
             System.out.println("STOP RECORDING");
             recordHelper.stopRecording();
             activity.runOnUiThread(new Runnable() {
@@ -98,7 +98,7 @@ public class CheerDropsyFeedScreen implements Runnable {
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        int ind=tflite.recognize(mels,modelFile,emotions.length);
+                        int ind = tflite.recognize(mels, modelFile, emotions.length);
                         evaluateEmotion(ind);
                     }
                 }
@@ -144,7 +144,7 @@ public class CheerDropsyFeedScreen implements Runnable {
                             public void run() {
                                 activity.setContentView(R.layout.food_game);
                                 if (won) {
-                                    new FoodScreen(activity, points + 1);
+                                    new FoodScreen(activity, points + 2);
                                 } else {
                                     new FoodScreen(activity, points);
                                 }
