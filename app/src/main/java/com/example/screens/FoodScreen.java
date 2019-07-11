@@ -102,9 +102,8 @@ public class FoodScreen {
     }
 
     private void feedApple() {
-        int num = Integer.parseInt((String) number.getText());
         if (isRottenApple) {
-            if (num > 0) {
+            if (points > 0) {
                 this.points--;
                 String level = Integer.toString(points);
                 number.setText(level);
@@ -113,15 +112,17 @@ public class FoodScreen {
             activity.setContentView(R.layout.minigame_cheer_dropsy);
             new CheerDropsyFeedScreen(activity, points);
 
+
 //            infoText = findViewById(R.id.info_text);
 //            infoHeadline = findViewById(R.id.info_headline);
 
 //            rottenApple.setVisibility(View.INVISIBLE);
-  //          droppie.changeEmotion(Emotion.Sadness);
+            //          droppie.changeEmotion(Emotion.Sadness);
             /*    infoText.setText("Du hast Droppy einen vergammelten Apfel gegeben :( \n Stecke Droppy mit deinem Lachen an, um sein Vertrauen zurück zu gewinnen.");*/
 
         } else {
-            String level = Integer.toString(points + 1);
+            points++;
+            String level = Integer.toString(points);
             number.setText(level);
             droppie.changeEmotion(Emotion.Happiness);
             apple.setVisibility(View.INVISIBLE);

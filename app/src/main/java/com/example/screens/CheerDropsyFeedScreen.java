@@ -69,9 +69,9 @@ public class CheerDropsyFeedScreen implements Runnable {
 
         if(success) {
             int cur=progressBar.getProgress()+1;
-            if(cur==3) {
+            if(cur==2) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==5) {
+            } else if(cur==4) {
                 droppie.changeEmotion(Emotion.Happiness);
                 won = true;
             }
