@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             e.printStackTrace();
         }
 
-        return Integer.parseInt(1+"");
+        return Integer.parseInt(fileContent);
     }
     public String levelnumberauslesen(String filename){
         String fileContent="";
@@ -503,10 +503,20 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             cur=level_bar.getMax()-cur;
         }
         level_bar.setProgress(cur);
+        level_number.setText(level);
+        String lv=level+"";
+        String pr=cur+"";
+        while(lv.length()<2) {
+            lv=0+lv;
+        }
+        while(pr.length()<2) {
+            pr=0+pr;
+        }
+        System.out.println("LEVEL: "+lv+", PROGRESS: "+pr);
         try {
             FileOutputStream fos = openFileOutput("levelbar.txt",
                     Context.MODE_PRIVATE);
-            String inputFileContext = (cur+"");
+            String inputFileContext = (pr);
             fos.write(inputFileContext.getBytes());
             fos.close();
         } catch (FileNotFoundException e) {
@@ -520,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         try {
             FileOutputStream fos = openFileOutput("levelnumber.txt",
                     Context.MODE_PRIVATE);
-            String inputFileContext = (level+"");
+            String inputFileContext = (lv);
             fos.write(inputFileContext.getBytes());
             fos.close();
         } catch (FileNotFoundException e) {

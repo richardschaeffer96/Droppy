@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 
 public class Instruction_ChearDropsy {
@@ -26,6 +27,7 @@ public class Instruction_ChearDropsy {
 
     private void startCheerDropsy(View v) {
         System.out.println("PUSH BUTTON START CHEER DROPSY");
+        activity.setContentView(R.layout.activity_main);
         activity.setContentView(R.layout.minigame_cheer_dropsy);
         new CheerDropsyScreen(activity);
 

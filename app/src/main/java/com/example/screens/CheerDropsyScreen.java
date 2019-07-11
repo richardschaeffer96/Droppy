@@ -140,38 +140,41 @@ public class CheerDropsyScreen implements Runnable {
     public void run() {
         Thread myThread = Thread.currentThread();
         while (clockThread == myThread) {
-            startRecording();
-            double curTime = System.currentTimeMillis();
-            dTime += curTime - time;
-            time = curTime;
-            if (dTime > 1000f) {
-                synchronized (this) {
-                    dTime = 0;
-                    secsLeft--;
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvSecs.setText(secsLeft + " s");
-                        }
-                    });
-                    if (secsLeft <= 0) {
-                        stopRecording();
+            synchronized (this) {
+                startRecording();
+                double curTime = System.currentTimeMillis();
+                dTime += curTime - time;
+                time = curTime;
+                if (dTime > 1000f) {
+                    synchronized (this) {
+                        dTime = 0;
+                        secsLeft--;
+                        System.out.println(secsLeft);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_main);
-                                activity.recreate();
-                                int progress=progressBar.getProgress();
-                                if(progress==10) {
-                                    ((MainActivity) activity).changeLevel(3);
-                                } else if(progress>=5) {
-                                    ((MainActivity) activity).changeLevel(1);
-                                }
+                                tvSecs.setText(secsLeft + " s");
                             }
                         });
-                        break;
+                        if (secsLeft <= 0) {
+                            stopRecording();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.setContentView(R.layout.activity_main);
+                                    activity.recreate();
+                                    int progress = progressBar.getProgress();
+                                    if (progress == 10) {
+                                        ((MainActivity) activity).changeLevel(3);
+                                    } else if (progress >= 5) {
+                                        ((MainActivity) activity).changeLevel(1);
+                                    }
+                                }
+                            });
+                            break;
+                        }
+                        stopRecording();
                     }
-                    stopRecording();
                 }
             }
         }
