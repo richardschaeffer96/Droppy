@@ -1,5 +1,6 @@
 package com.example.screens;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.View;
@@ -26,13 +27,16 @@ public class FoodScreen {
     private Droppie droppie;
     private boolean isRottenApple;
     private Activity activity;
+    private int points;
 
 
-    public FoodScreen(final Activity activity) {
+    @SuppressLint("SetTextI18n")
+    public FoodScreen(final Activity activity, int points) {
         this.activity = activity;
         this.activity.setContentView(R.layout.food_game);
-
+        this.points = points;
         number = this.activity.findViewById(R.id.number);
+        number.setText(Integer.toString(points));
         apple = this.activity.findViewById(R.id.apple);
         rottenApple = this.activity.findViewById(R.id.rotten_apple);
         buttonOne = this.activity.findViewById(R.id.button_1);
@@ -101,14 +105,13 @@ public class FoodScreen {
         int num = Integer.parseInt((String) number.getText());
         if (isRottenApple) {
             if (num > 0) {
-                String numb = Integer.toString(num - 1);
-                number.setText(numb);
+                this.points--;
+                String level = Integer.toString(points);
+                number.setText(level);
             }
             droppie.changeEmotion(Emotion.Sadness);
             activity.setContentView(R.layout.minigame_cheer_dropsy);
-            new CheerDropsyFeedScreen(activity);
-
-
+            new CheerDropsyFeedScreen(activity, points);
 
 //            infoText = findViewById(R.id.info_text);
 //            infoHeadline = findViewById(R.id.info_headline);
@@ -118,8 +121,8 @@ public class FoodScreen {
             /*    infoText.setText("Du hast Droppy einen vergammelten Apfel gegeben :( \n Stecke Droppy mit deinem Lachen an, um sein Vertrauen zurück zu gewinnen.");*/
 
         } else {
-            String numb = Integer.toString(num + 1);
-            number.setText(numb);
+            String level = Integer.toString(points + 1);
+            number.setText(level);
             droppie.changeEmotion(Emotion.Happiness);
             apple.setVisibility(View.INVISIBLE);
             buttonOne.setVisibility(View.VISIBLE);

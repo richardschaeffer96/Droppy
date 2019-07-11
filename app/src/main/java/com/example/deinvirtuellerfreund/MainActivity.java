@@ -648,7 +648,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void gameTwo() {
         setContentView(R.layout.minigame_instruction_cheer_dropsy);
-        new FoodScreen(this);
+        new FoodScreen(this, 0);
     }
 
     public void gameThree() {

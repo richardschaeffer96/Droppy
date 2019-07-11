@@ -16,8 +16,24 @@ import java.util.Random;
 
 public class CheerDropsyFeedScreen implements Runnable {
 
-    public CheerDropsyFeedScreen(Activity activity) {
+    private int points;
+    private ProgressBar progressBar;
+    private Activity activity;
+    private static TextView tvSecs;
+    private double time;
+    private double dTime;
+    private int secsLeft=10;
+    private Thread clockThread = null;
+    private RecordHelper recordHelper;
+    private Droppie droppie;
+    private boolean won = false;
+
+    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
+    private String modelFile="lachen_stille_reden.lite";
+
+    public CheerDropsyFeedScreen(Activity activity, int points) {
         this.activity = activity;
+        this.points = points;
         activity.setContentView(R.layout.minigame_cheer_dropsy);
         tvSecs = activity.findViewById(R.id.seconds_left);
         tvSecs.setText(secsLeft + " s");
@@ -27,28 +43,10 @@ public class CheerDropsyFeedScreen implements Runnable {
         start();
     }
 
-    private ProgressBar progressBar;
-    private Activity activity;
-    private static TextView tvSecs;
-    private double time;
-    private double dTime;
-    private int secsLeft=10;
-    private Thread clockThread = null;
-    private RecordHelper recordHelper;
-    private Random r=new Random();
-    private Droppie droppie;
-
-    private String[]startCondition={"wütend","traurig"};
-    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
-    private String modelFile="lachen_stille_reden.lite";
-    private int startInd=0;
-
-
-
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
         progressBar=activity.findViewById(R.id.emotion_bar);
-        progressBar.setMax(6);
+        progressBar.setMax(7);
         progressBar.setProgress(1);
         droppie=new Droppie(activity);
         droppie.changeEmotion(Emotion.Sadness);
@@ -67,7 +65,7 @@ public class CheerDropsyFeedScreen implements Runnable {
     private void evaluateEmotion(int ind) {
         String em=emotions[ind];
         System.out.println(em);
-        boolean success = em.equals("lachen");
+        boolean success = em.equals("reden");
 
         if(success) {
             int cur=progressBar.getProgress()+1;
@@ -75,6 +73,7 @@ public class CheerDropsyFeedScreen implements Runnable {
                 droppie.changeEmotion(Emotion.Neutral);
             } else if(cur==5) {
                 droppie.changeEmotion(Emotion.Happiness);
+                won = true;
             }
             progressBar.setProgress(cur);
         }
@@ -144,6 +143,11 @@ public class CheerDropsyFeedScreen implements Runnable {
                             @Override
                             public void run() {
                                 activity.setContentView(R.layout.food_game);
+                                if (won) {
+                                    new FoodScreen(activity, points + 1);
+                                } else {
+                                    new FoodScreen(activity, points);
+                                }
                             }
                         });
                         break;
