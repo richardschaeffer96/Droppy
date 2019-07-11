@@ -195,7 +195,7 @@ public class TFLiteClassifier {
         int max=0;
         Emotion maxEm=Emotion.Neutral;
         i=0;
-        while(i<Emotion.values().length) {
+        while(i<4) {
             Emotion cur=Emotion.values()[i];
             if(emo.get(cur)>max) {
                 max=emo.get(cur);
