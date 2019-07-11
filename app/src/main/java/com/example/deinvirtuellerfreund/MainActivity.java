@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -190,27 +191,23 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         moveX = 0;
                         moveY = 0;
                         currentMS = System.currentTimeMillis();//long currentMS     获取系统时间
-                        System.out.println("TOUCH!!!!!!!!!!!!!");
                         break;
                     case MotionEvent.ACTION_MOVE:
                         droppie.changeEmotion(Emotion.Satisfied);
-                        System.out.println("TEST!!!!!!!!!!!!!");
                         moveX += Math.abs(event.getX() - DownX);//X轴距离
                         moveY += Math.abs(event.getY() - DownY);//y轴距离
                         DownX = event.getX();
                         DownY = event.getY();
                         break;
                     case MotionEvent.ACTION_UP:
-                        System.out.println("UP!!!!!!!!!!!!!");
                         long moveTime = System.currentTimeMillis() - currentMS;//移动时间
                         //判断是否继续传递信号
                         if(moveTime>200&&(moveX>20||moveY>20)){
                             droppie.changeEmotion(Emotion.Happiness);
-                            System.out.println("this ist a moveevent");
                             return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
-                            System.out.println("this is a tagevent");}
+                            }
                         break;
                 }
                 return true;//继续执行后面的代码
@@ -285,38 +282,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
             }
         });
-
-
-
-        /*
-        talk.setOnTouchListener(new View.OnTouchListener(){
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                recordHelper=new RecordHelper(activity);
-                if(event.getAction()==MotionEvent.ACTION_DOWN&&check_button.equals(false)){
-                    check_button = true;
-                    recordHelper.startRecording();
-                }else if (event.getAction()==MotionEvent.ACTION_UP){
-                    recordHelper.stopRecording();
-                    try {
-                        short[]signal=recordHelper.transformToWavData();
-                        Preprocessor prep=new Preprocessor();
-                        float[][]mels=prep.preprocessAudioFile(signal,39);
-                        TFLiteClassifier tflite=new TFLiteClassifier(activity);
-                        tflite.recognize(mels);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    check_button=false;
-                }
-                return false;
-            }
-
-        });
-
-        */
-
     }
+
     public boolean fileIsExists(String filename) {
         try {
             String AbsolutePath = getFilesDir().getAbsolutePath();
@@ -462,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void close(View v){
         info_overlay.hide();
+        tellJoke(v);
     }
 
     //public void talk(View v){ }
@@ -497,13 +465,15 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         popupMenu.show();
     }
 
+
+
     public void changeLevel(Integer score) {
 
+        System.out.println("PROGRESS IST: " + level_bar.getProgress());
 
-        if(level_bar.getProgress()!=100){
+        if(level_bar.getProgress()<100){
             Integer add = score + level_bar.getProgress();
             level_bar.setProgress(add);
-            //droppie.changeEmotion(Emotion.Happiness);
             try {
                 FileOutputStream fos = openFileOutput("levelbar.txt",
                         Context.MODE_PRIVATE);
@@ -519,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 System.out.println("levelbar datein existiert" );
             }
         } else {
+            System.out.println("!!!!!!! LEVEL UP !!!!!!!!!");
             Integer level = Integer.parseInt(level_number.getText().toString());
             level = level +1;
             level_number.setText(level.toString());
@@ -556,6 +527,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         jokeChallenge();
     }
 
+
+
     public void tellJoke(View v){
 
         inMinigame=false;
@@ -568,8 +541,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         GraphicOverlay.delay_active=false;
 
         String jokeString = jokes.get(0);
-
-        System.out.println("Witz: " + jokeString);
 
         Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
 
@@ -615,8 +586,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String jokeString = jokes.get(0);
                 jokes.remove(0);
 
-                System.out.println("Witz: " + jokeString);
-
                 Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
 
                 droppie.changeEmotion(Emotion.Talking);
@@ -658,7 +627,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void setJokeView(){
-        System.out.println("");
         level_header.setText("Durchhaltevermögen");
         level_number.setVisibility(View.INVISIBLE);
         weather_icon.setVisibility(View.INVISIBLE);
@@ -673,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         jokecount=0;
 
         if(progress>80){
-            points=20;
+            points=50;
         }else if(progress>50&&progress<80){
             points=15;
         }else if(progress<50&&progress>30){
@@ -697,7 +665,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             changeLevel(points);
 
         }
-        System.out.println("!!! PUNKTE SIND: " + points);
     }
 
     public void listRaw(){
@@ -743,6 +710,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         new InfoOverlayScreen(this, "animal", headline, content);
     }
 
+
+
     public void taskLoadUp(String query) {
         if (Function.isNetworkAvailable(getApplicationContext())) {
             DownloadWeather task = new DownloadWeather();
@@ -778,15 +747,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         protected String doInBackground(String...args) {
             String xml = Function.excuteGet("http://api.openweathermap.org/data/2.5/weather?q=" + args[0] +
                     "&units=metric&appid=" + OPEN_WEATHER_MAP_API);
-            System.out.println(xml);
-
             return xml;
         }
         @Override
         protected void onPostExecute(String xml) {
 
             try {
-                System.out.println(xml);
                 if (xml==null){
 
                 } else {
@@ -835,11 +801,5 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             return new GraphicFaceTracker(mGraphicOverlay);
         }
     }
-
-    public void poke(View v){
-        //TODO Richard add animation
-    }
-
-
 
 }
