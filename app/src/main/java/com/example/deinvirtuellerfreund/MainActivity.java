@@ -34,6 +34,9 @@ import android.widget.Toast;
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
+import com.example.screens.AnimalSoundScreen;
+import com.example.screens.CheerScreen;
+import com.example.screens.FoodScreen;
 import com.example.screens.InfoOverlayScreen;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -61,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.http.util.EncodingUtils;
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
@@ -76,8 +80,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int RC_HANDLE_GMS = 2;
 
+    private String nextScreen;
+
     MediaPlayer player;
     Dialog info_overlay;
+    TextView info_header;
+    TextView info_text;
     public static ProgressBar level_bar;
     public static Boolean inMinigame;
     TextView level_number;
@@ -215,6 +223,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         });
 
         info_overlay = new Dialog(this);
+
+        info_overlay.setContentView(R.layout.info_overlay);
+
+        info_header = info_overlay.findViewById(R.id.info_headline);
+        info_text = info_overlay.findViewById(R.id.info_text);
+
         talk = findViewById(R.id.Button_Micro);
         eat = findViewById(R.id.Button_Eat);
         info = findViewById(R.id.Button_Info);
@@ -417,12 +431,33 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     public void info(View v){
         info_overlay.setContentView(R.layout.info_overlay);
         info_overlay.show();
+        nextScreen = "info";
 
     }
 
     public void close(View v){
         info_overlay.hide();
-        tellJoke(v);
+
+        switch (nextScreen) {
+            case "info":
+                break;
+            case "cheer":
+                activity.setContentView(R.layout.minigame_cheer);
+                new CheerScreen(activity);
+                break;
+            case "food":
+                activity.setContentView(R.layout.food_game);
+                new FoodScreen(activity, 0);
+                break;
+            case "animal":
+                activity.setContentView(R.layout.minigame_animals);
+                new AnimalSoundScreen(activity);
+                break;
+            case "main":
+                Intent intent = new Intent(activity, MainActivity.class);
+                activity.startActivity(intent);
+                break;
+        }
     }
 
     //public void talk(View v){ }
@@ -437,18 +472,28 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
                     case "Witze":
-                        preJokeChallenge();
+                        nextScreen="joke";
+                        info_header.setText("getResources().getString(R.string.joke_headline)");
+                        info_text.setText("getResources().getString(R.string.joke_content)");
                         break;
                     case "Essen":
-                        foodGame();
+                        nextScreen="food";
+                        info_header.setText(getResources().getString(R.string.food_headline));
+                        info_text.setText(getResources().getString(R.string.food_content));
                         break;
                     case "Aufmuntern":
-                        cheerGame();
+                        nextScreen="cheer";
+                        info_header.setText(getResources().getString(R.string.cheer_headline));
+                        info_text.setText(getResources().getString(R.string.cheer_content));
                         break;
                     case "Tiergeräusche":
-                        animalGame();
+                        nextScreen="animal";
+                        info_header.setText(getResources().getString(R.string.animal_headline));
+                        info_text.setText(getResources().getString(R.string.animal_content));
                         break;
                 }
+
+                info_overlay.show();
 
           //      Toast.makeText(MainActivity.this, "" + item.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;

@@ -1,10 +1,12 @@
 package com.example.screens;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 
 
@@ -44,8 +46,10 @@ public class InfoOverlayScreen {
                         activity.setContentView(R.layout.minigame_animals);
                         new AnimalSoundScreen(activity);
                     case "main":
-                        activity.setContentView(R.layout.activity_main);
-                        activity.recreate();
+                        //activity.setContentView(R.layout.activity_main);
+                        //activity.recreate();
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        activity.startActivity(intent);
                         break;
                 }
             }
