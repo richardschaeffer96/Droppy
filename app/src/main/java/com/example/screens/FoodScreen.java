@@ -32,7 +32,7 @@ public class FoodScreen {
     @SuppressLint("SetTextI18n")
     public FoodScreen(final Activity activity, int points) {
         if (points == 10) {
-           won();
+            won();
         }
         this.activity = activity;
         this.activity.setContentView(R.layout.food_game);
@@ -91,10 +91,10 @@ public class FoodScreen {
     }
 
     private void won() {
-        if(points > 4 && points < 8 && activity instanceof MainActivity) {
+        if (points > 4 && points < 8 && activity instanceof MainActivity) {
             ((MainActivity) activity).changeLevel(10);
         }
-        if(points >= 8 && activity instanceof MainActivity) {
+        if (points >= 8 && activity instanceof MainActivity) {
             ((MainActivity) activity).changeLevel(15);
         }
         activity.setContentView(R.layout.won_screen);

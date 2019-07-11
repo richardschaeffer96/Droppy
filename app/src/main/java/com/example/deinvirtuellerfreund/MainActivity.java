@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -434,7 +433,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
 
     public void info(View v){
-        info_overlay.setContentView(R.layout.info_overlay);
+       // info_overlay.setContentView(R.layout.info_overlay);
+        info_header.setText(getResources().getString(R.string.info_headline));
+        info_text.setText(getResources().getString(R.string.info_content));
         info_overlay.show();
         nextScreen = "info";
 
@@ -481,8 +482,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 switch (gameTitle) {
                     case "Witze":
                         nextScreen="joke";
-                        info_header.setText("getResources().getString(R.string.joke_headline)");
-                        info_text.setText("getResources().getString(R.string.joke_content)");
+                        info_header.setText(getResources().getString(R.string.joke_headline));
+                        info_text.setText(getResources().getString(R.string.joke_content));
                         break;
                     case "Essen":
                         nextScreen="food";
@@ -705,8 +706,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 player.start();
 
             }
-
-
         }
 
         if(jokecount==max_jokes){
