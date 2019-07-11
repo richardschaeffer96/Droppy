@@ -2,14 +2,13 @@ package com.example.screens;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 
 import java.util.Random;
@@ -51,7 +50,7 @@ public class FoodScreen {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.setContentView(R.layout.activity_main);
+                won();
             }
         });
 
@@ -92,6 +91,12 @@ public class FoodScreen {
     }
 
     private void won() {
+        if(points > 4 && points < 8 && activity instanceof MainActivity) {
+            ((MainActivity) activity).changeLevel(10);
+        }
+        if(points >= 8 && activity instanceof MainActivity) {
+            ((MainActivity) activity).changeLevel(15);
+        }
         String headline = activity.getResources().getString(R.string.won_headline);
         String content = activity.getResources().getString(R.string.won_content);
         activity.setContentView(R.layout.info_overlay);
@@ -115,17 +120,8 @@ public class FoodScreen {
         if (isRottenApple) {
             this.points--;
             droppie.changeEmotion(Emotion.Sadness);
-            activity.setContentView(R.layout.minigame_cheer_dropsy);
-            new CheerDropsyFeedScreen(activity, points);
-
-
-//            infoText = findViewById(R.id.info_text);
-//            infoHeadline = findViewById(R.id.info_headline);
-
-//            rottenApple.setVisibility(View.INVISIBLE);
-            //          droppie.changeEmotion(Emotion.Sadness);
-            /*    infoText.setText("Du hast Droppy einen vergammelten Apfel gegeben :( \n Stecke Droppy mit deinem Lachen an, um sein Vertrauen zurück zu gewinnen.");*/
-
+            activity.setContentView(R.layout.minigame_cheer);
+            new CheerFoodScreen(activity, points);
         } else {
             points++;
             if (points == 10) {
@@ -145,7 +141,6 @@ public class FoodScreen {
     private boolean isRottenApple() {
         Random rand = new Random();
         int randomNum = rand.nextInt((3 - 1) + 1) + 1;
-     //   return randomNum % 2 != 0;
-        return false;
+        return randomNum % 2 != 0;
     }
 }

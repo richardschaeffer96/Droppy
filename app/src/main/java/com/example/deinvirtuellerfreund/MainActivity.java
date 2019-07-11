@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -28,17 +27,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.camera.CameraPreview;
 import com.example.camera.GraphicFaceTracker;
 import com.example.camera.GraphicOverlay;
-import com.example.screens.FoodScreen;
 import com.example.screens.InfoOverlayScreen;
-import com.example.screens.Instruction_AnimalSounds;
-import com.example.screens.Instruction_ChearDropsy;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
 import com.example.voice.TFLiteClassifier;
@@ -61,13 +56,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -489,13 +479,13 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         preJokeChallenge();
                         break;
                     case "Essen":
-                        gameTwo();
+                        foodGame();
                         break;
                     case "Aufmuntern":
-                        gameThree();
+                        cheerGame();
                         break;
                     case "Tiergeräusche":
-                        gameFour();
+                        animalGame();
                         break;
                 }
 
@@ -732,21 +722,25 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         stopPlayer();
     }
 
-    public void gameTwo() {
+    public void foodGame() {
         String headline = getResources().getString(R.string.food_headline);
         String content = getResources().getString(R.string.food_content);
         setContentView(R.layout.info_overlay);
         new InfoOverlayScreen(this, "food", headline, content);
     }
 
-    public void gameThree() {
-        setContentView(R.layout.minigame_instruction_cheer_dropsy);
-        new Instruction_ChearDropsy(this);
+    public void cheerGame() {
+        String headline = getResources().getString(R.string.cheer_headline);
+        String content = getResources().getString(R.string.cheer_content);
+        setContentView(R.layout.info_overlay);
+        new InfoOverlayScreen(this, "cheer", headline, content);
     }
 
-    public void gameFour() {
-        setContentView(R.layout.minigame_instruction_animals);
-        new Instruction_AnimalSounds(this);
+    public void animalGame() {
+        String headline = getResources().getString(R.string.animal_headline);
+        String content = getResources().getString(R.string.animal_content);
+        setContentView(R.layout.info_overlay);
+        new InfoOverlayScreen(this, "animal", headline, content);
     }
 
     public void taskLoadUp(String query) {

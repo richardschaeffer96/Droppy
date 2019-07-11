@@ -15,18 +15,16 @@ import com.example.camera.GraphicOverlay;
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
 import com.example.deinvirtuellerfreund.R;
-import com.example.voice.RecordHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 public class JokeChallenge implements Runnable{
 
     public JokeChallenge(Activity activity, ImageView mouth) {
         this.activity = activity;
-        activity.setContentView(R.layout.minigame_cheer_dropsy);
+        activity.setContentView(R.layout.minigame_cheer);
         this.mouth = mouth;
 
         animTalking = AnimationUtils.loadAnimation(activity, R.anim.talkinganimation);
