@@ -112,10 +112,18 @@ public class TFLiteClassifier {
 
         int ind=getMaxIndex(out[0]);
         if(Emotion.values()[ind]==Emotion.Happiness) {
-            MainActivity.jokeProgress -= 10;
-            MainActivity.level_bar.setProgress(MainActivity.jokeProgress);
-            System.out.println("!!!!!! Jokeprogress ist: " + MainActivity.jokeProgress);
-            // TODO: RICHARD: auf public static int zugreifen und -- nehmen.
+
+            if(MainActivity.inMinigame==true){
+                MainActivity.jokeProgress -= 10;
+                MainActivity.level_bar.setProgress(MainActivity.jokeProgress);
+                System.out.println("!!!!!! Jokeprogress ist: " + MainActivity.jokeProgress);
+            }else{
+                MainActivity.points+=1;
+            }
+
+            System.out.println("MOMENTANE PUNTKE SIND: " + MainActivity.points);
+            System.out.println("IN MINIGAME IST: " + MainActivity.inMinigame);
+
         }
     }
 

@@ -87,12 +87,14 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     MediaPlayer player;
     Dialog info_overlay;
     public static ProgressBar level_bar;
+    public static Boolean inMinigame;
     TextView level_number;
     TextView level_header;
     Field[] fields;
     Boolean new_joke = true;
     ArrayList<String> jokes = new ArrayList<String>();
     Integer jokecount = 0;
+    public static Integer points = 0;
     public static Integer jokeProgress = 100;
 
     //BODY OF DROPPY
@@ -168,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             level_number.setText(levelnumberauslesen("levelnumber.txt"));
 
         }
+
+        inMinigame=false;
 
         droppie=new Droppie(this);
 
@@ -536,8 +540,52 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         GraphicOverlay.delay_active=false;
 
+        inMinigame=true;
+
         jokeChallenge();
     }
+
+    public void tellJoke(View v){
+
+        inMinigame=false;
+
+        for(int i=0; i<fields.length; i++){
+            jokes.add(fields[i].getName());
+        }
+
+        Collections.shuffle(jokes);
+        GraphicOverlay.delay_active=false;
+
+        String jokeString = jokes.get(0);
+
+        System.out.println("Witz: " + jokeString);
+
+        Uri uri = Uri.parse("android.resource://com.example.deinvirtuellerfreund/raw/" + jokeString);
+
+        droppie.changeEmotion(Emotion.Talking);
+        mouth.startAnimation(animTalking);
+
+        player = MediaPlayer.create(this, uri);
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                stopPlayer();
+                GraphicOverlay.delay_active=true;
+                if(points>=3){
+                    mouth.startAnimation(animMouth);
+                    droppie.changeEmotion(Emotion.Happiness);
+                    points=0;
+                }else{
+                    mouth.startAnimation(animMouth);
+                    droppie.changeEmotion(Emotion.Sadness);
+                    points=0;
+                }
+            }
+        });
+
+        player.start();
+
+        }
 
     public void jokeChallenge() {
 
@@ -551,6 +599,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         if(jokecount==max_jokes){
             GraphicOverlay.delay_active=true;
+            inMinigame=false;
             deleteJokeView(jokeProgress);
         }
 
@@ -757,5 +806,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     public void poke(View v){
         //TODO Richard add animation
     }
+
+
 
 }
