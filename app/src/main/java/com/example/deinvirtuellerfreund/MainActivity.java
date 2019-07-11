@@ -503,6 +503,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
 
+    public void backToMain(View v){
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
+    }
+
 
     public void changeLevel(Integer score) {
 

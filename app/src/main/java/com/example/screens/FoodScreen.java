@@ -97,10 +97,7 @@ public class FoodScreen {
         if(points >= 8 && activity instanceof MainActivity) {
             ((MainActivity) activity).changeLevel(15);
         }
-        String headline = activity.getResources().getString(R.string.won_headline);
-        String content = activity.getResources().getString(R.string.won_content);
-        activity.setContentView(R.layout.info_overlay);
-        new InfoOverlayScreen(activity, "main", headline, content);
+        activity.setContentView(R.layout.won_screen);
     }
 
     private void showApple() {

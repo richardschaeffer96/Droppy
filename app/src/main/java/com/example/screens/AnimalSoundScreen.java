@@ -138,7 +138,7 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_main);
+                                activity.setContentView(R.layout.won_screen);
                             }
                         });
                         break;
