@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -159,6 +160,13 @@ public class CheerDropsyScreen implements Runnable {
                             @Override
                             public void run() {
                                 activity.setContentView(R.layout.activity_main);
+                                activity.recreate();
+                                int progress=progressBar.getProgress();
+                                if(progress==10) {
+                                    ((MainActivity) activity).changeLevel(3);
+                                } else if(progress>=5) {
+                                    ((MainActivity) activity).changeLevel(1);
+                                }
                             }
                         });
                         break;

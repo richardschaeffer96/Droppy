@@ -129,31 +129,34 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
     static Camera camera = null;
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-        } else if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
+        System.out.println("API VERSION: "+android.os.Build.VERSION.SDK_INT);
+        if(android.os.Build.VERSION.SDK_INT>22) { // NICHT FÜR CLAUDIAS HANDY
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
+            }
         }
-
         level_header = findViewById(R.id.level_header);
 
         level_bar = findViewById(R.id.level_bar);
@@ -241,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             // permission not granted, initiate request
         //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         //} else {
-            createCameraSource();
+            //createCameraSource();
         //}
 
         //taskLoadUp(city);
@@ -332,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             e.printStackTrace();
         }
 
-        return Integer.parseInt(fileContent);
+        return Integer.parseInt(1+"");
     }
     public String levelnumberauslesen(String filename){
         String fileContent="";
@@ -356,7 +359,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
-            createCameraSource();
+            System.out.println("API VERSION: "+android.os.Build.VERSION.SDK_INT);
+            if(android.os.Build.VERSION.SDK_INT>22) { // NICHT FÜR CLAUDIAS HANDY
+                createCameraSource();
+            }
         }
     }
 
@@ -393,8 +399,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     @Override
     protected void onResume() {
         super.onResume();
-
-        startCameraSource();
+        if(android.os.Build.VERSION.SDK_INT>22) { // NICHT FÜR CLAUDIAS HANDY
+            startCameraSource();
+        }
     }
 
     /**
@@ -482,48 +489,49 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         popupMenu.show();
     }
 
-    private void changeLevel() {
 
-
-        if(level_bar.getProgress()!=100){
-            Integer add = 10 + level_bar.getProgress();
-            level_bar.setProgress(add);
-            //droppie.changeEmotion(Emotion.Happiness);
-            try {
-                FileOutputStream fos = openFileOutput("levelbar.txt",
-                        Context.MODE_PRIVATE);
-                String inputFileContext = add.toString();
-                fos.write(inputFileContext.getBytes());
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(fileIsExists("levelbar.txt")){
-                System.out.println("levelbar datein existiert" );
-            }
-        } else {
-            Integer level = Integer.parseInt(level_number.getText().toString());
-            level = level +1;
-            level_number.setText(level.toString());
-            level_bar.setProgress(0);
-            droppie.changeEmotion(Emotion.Neutral);
-            try {
-                FileOutputStream fos = openFileOutput("levelnumber.txt",
-                        Context.MODE_PRIVATE);
-                String inputFileContext = level.toString();
-                fos.write(inputFileContext.getBytes());
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(fileIsExists("levelnumber.txt")){
-                System.out.println("levelnumber datein existiert" );
-            }
+    public void changeLevel(int progress) {
+        int cur=level_bar.getProgress()+progress;
+        int level=Integer.parseInt(level_number.getText().toString());
+        if(cur>=level_bar.getMax()) {
+            level+=1;
+            level_number.setText(level);
+            cur-=level_bar.getMax();
+        } else if(cur<0) {
+            level-=1;
+            level_number.setText(level);
+            cur=level_bar.getMax()-cur;
         }
+        level_bar.setProgress(cur);
+        try {
+            FileOutputStream fos = openFileOutput("levelbar.txt",
+                    Context.MODE_PRIVATE);
+            String inputFileContext = (cur+"");
+            fos.write(inputFileContext.getBytes());
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(fileIsExists("levelbar.txt")){
+            System.out.println("levelbar datein existiert" );
+        }
+        try {
+            FileOutputStream fos = openFileOutput("levelnumber.txt",
+                    Context.MODE_PRIVATE);
+            String inputFileContext = (level+"");
+            fos.write(inputFileContext.getBytes());
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(fileIsExists("levelnumber.txt")){
+            System.out.println("levelnumber datein existiert" );
+        }
+
     }
 
     public void preJokeChallenge(){
@@ -620,7 +628,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         if(points==0){
 
         }else{
-            changeLevel();
+            changeLevel(1);
         }
     }
 
