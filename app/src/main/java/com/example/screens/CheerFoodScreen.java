@@ -12,93 +12,76 @@ import com.example.voice.RecordHelper;
 import com.example.voice.TFLiteClassifier;
 
 import java.io.IOException;
-import java.util.Random;
 
-public class CheerDropsyScreen implements Runnable {
+public class CheerFoodScreen implements Runnable {
 
-    public CheerDropsyScreen(Activity activity) {
-        this.activity = activity;
-        activity.setContentView(R.layout.minigame_cheer_dropsy);
-        tvSecs = activity.findViewById(R.id.seconds_left);
-        tvSecs.setText(secsLeft + " s");
-        time = System.currentTimeMillis();
-        recordHelper=new RecordHelper(activity);
-        initStartCondition();
-        start();
-    }
-
+    private int points;
     private ProgressBar progressBar;
     private Activity activity;
     private static TextView tvSecs;
     private double time;
     private double dTime;
-    private int secsLeft=15;
+    private int secsLeft = 10;
     private Thread clockThread = null;
     private RecordHelper recordHelper;
-    private Random r=new Random();
     private Droppie droppie;
+    private boolean won = false;
 
-    private String[]startCondition={"wütend","traurig"};
-    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
-    private String modelFile="lachen_stille_reden.lite";
-    private int startInd=0;
+    private String[] emotions = {"lachen", "stille", "reden", "klopfen", "gähnen", "husten"};
+    private String modelFile = "lachen_stille_reden.lite";
 
-
+    public CheerFoodScreen(Activity activity, int points) {
+        this.activity = activity;
+        this.points = points;
+        activity.setContentView(R.layout.minigame_cheer);
+        tvSecs = activity.findViewById(R.id.seconds_left);
+        tvSecs.setText(secsLeft + " s");
+        time = System.currentTimeMillis();
+        recordHelper = new RecordHelper(activity);
+        initStartCondition();
+        start();
+    }
 
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
-        progressBar=activity.findViewById(R.id.emotion_bar);
-        progressBar.setMax(10);
+        progressBar = activity.findViewById(R.id.emotion_bar);
+        progressBar.setMax(7);
         progressBar.setProgress(1);
-        droppie=new Droppie(activity);
-        startInd=r.nextInt(2);
-        if(startInd==0) {
-            droppie.changeEmotion(Emotion.Anger);
-        } else {
-            droppie.changeEmotion(Emotion.Sadness);
-        }
+        droppie = new Droppie(activity);
+        droppie.changeEmotion(Emotion.Sadness);
     }
 
     // Nimmt einen beim Sprechen auf
     private void startRecording() {
-        if(recordHelper.getRecording()==false){
+        if (recordHelper.getRecording() == false) {
             System.out.println("START RECORDING");
             recordHelper.startRecording();
         }
-
     }
 
     // Nach Aufnahme wird Emotion ausgewertet
     // Je nach Startsetting (wütend oder traurig) erhält man für REDEN oder LACHEN Punkte
     private void evaluateEmotion(int ind) {
-        String em=emotions[ind];
+        String em = emotions[ind];
         System.out.println(em);
-        boolean success=false;
-        if(startInd==0) {
-            // WÜTEND: BEKOMMT PUNKT FÜR REDEN
-            if(em=="reden") {
-                success=true;
-            }
-        } else {
-            // TRAURIG: BEKOMMT PUNKT FÜR LACHEN
-            if(em=="lachen") {
-                success=true;
-            }
-        }
-        if(success==true) {
-            int cur=progressBar.getProgress()+1;
-            if(cur==5) {
+        boolean success = em.equals("reden");
+
+        if (success) {
+            int cur = progressBar.getProgress() + 1;
+            if (cur == 2) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==7) {
+            } else if (cur == 4) {
                 droppie.changeEmotion(Emotion.Happiness);
+                won = true;
             }
             progressBar.setProgress(cur);
         }
     }
 
+
     // Beende Aufnahme, starte Aufbereitung der Daten und Beginne Auswertung
     private void stopRecording() {
-        if(recordHelper.getRecording()==true) {
+        if (recordHelper.getRecording() == true) {
             System.out.println("STOP RECORDING");
             recordHelper.stopRecording();
             activity.runOnUiThread(new Runnable() {
@@ -114,7 +97,7 @@ public class CheerDropsyScreen implements Runnable {
                         Preprocessor prep = new Preprocessor();
                         float[][] mels = prep.preprocessAudioFile(signal, 39);
                         TFLiteClassifier tflite = new TFLiteClassifier(activity);
-                        int ind=tflite.recognize(mels,modelFile,emotions.length);
+                        int ind = tflite.recognize(mels, modelFile, emotions.length);
                         evaluateEmotion(ind);
                     }
                 }
@@ -158,7 +141,12 @@ public class CheerDropsyScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_main);
+                                activity.setContentView(R.layout.food_game);
+                                if (won) {
+                                    new FoodScreen(activity, points + 2);
+                                } else {
+                                    new FoodScreen(activity, points);
+                                }
                             }
                         });
                         break;

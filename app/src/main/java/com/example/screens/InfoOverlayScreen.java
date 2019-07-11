@@ -32,16 +32,20 @@ public class InfoOverlayScreen {
             @Override
             public void onClick(View view) {
                 switch (nextView) {
-                    case "chear":
-                        activity.setContentView(R.layout.minigame_cheer_dropsy);
-                        new CheerDropsyScreen(activity);
+                    case "cheer":
+                        activity.setContentView(R.layout.minigame_cheer);
+                        new CheerScreen(activity);
                         break;
                     case "food":
-                        activity.setContentView(R.layout.minigame_instruction_cheer_dropsy);
+                        activity.setContentView(R.layout.food_game);
                         new FoodScreen(activity, 0);
                         break;
+                    case "animal":
+                        activity.setContentView(R.layout.minigame_animals);
+                        new AnimalSoundScreen(activity);
                     case "main":
                         activity.setContentView(R.layout.activity_main);
+                        activity.recreate();
                         break;
                 }
             }
