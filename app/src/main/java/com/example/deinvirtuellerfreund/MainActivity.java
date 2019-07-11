@@ -610,19 +610,13 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void jokeChallenge() {
 
+        int max_jokes = 1;
+
         if(jokeProgress<=0){
-            jokecount=3;
+            jokecount=max_jokes;
         }
 
         setJokeView();
-
-        int max_jokes = 3;
-
-        if(jokecount==max_jokes){
-            GraphicOverlay.delay_active=true;
-            inMinigame=false;
-            deleteJokeView(jokeProgress);
-        }
 
         if(jokecount<max_jokes){
 
@@ -649,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         synchronized (this) {
                             try {
                                 this.wait(2000);
-                                //TODO MAYBE EVERYTHING FREEZES???
                                 jokecount++;
                                 jokeChallenge();
                             } catch (InterruptedException e) {
@@ -662,10 +655,20 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 player.start();
 
             }
+
+
         }
+
+        if(jokecount==max_jokes){
+            GraphicOverlay.delay_active=true;
+            inMinigame=false;
+            deleteJokeView(jokeProgress);
+        }
+
     }
 
     public void setJokeView(){
+        System.out.println("");
         level_header.setText("Durchhaltevermögen");
         level_number.setVisibility(View.INVISIBLE);
         weather_icon.setVisibility(View.INVISIBLE);
@@ -676,6 +679,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void deleteJokeView(Integer progress){
+
+        jokecount=0;
 
         if(progress>80){
             points=20;
@@ -700,7 +705,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         }else{
             changeLevel(points);
+
         }
+        System.out.println("!!! PUNKTE SIND: " + points);
     }
 
     public void listRaw(){
