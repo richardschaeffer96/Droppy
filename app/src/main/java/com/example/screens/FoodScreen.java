@@ -32,6 +32,9 @@ public class FoodScreen {
 
     @SuppressLint("SetTextI18n")
     public FoodScreen(final Activity activity, int points) {
+        if (points == 10) {
+           won();
+        }
         this.activity = activity;
         this.activity.setContentView(R.layout.food_game);
         this.points = points;
@@ -88,6 +91,13 @@ public class FoodScreen {
         });
     }
 
+    private void won() {
+        String headline = activity.getResources().getString(R.string.won_headline);
+        String content = activity.getResources().getString(R.string.won_content);
+        activity.setContentView(R.layout.info_overlay);
+        new InfoOverlayScreen(activity, "main", headline, content);
+    }
+
     private void showApple() {
         buttonOne.setVisibility(View.INVISIBLE);
         buttonTwo.setVisibility(View.INVISIBLE);
@@ -118,6 +128,10 @@ public class FoodScreen {
 
         } else {
             points++;
+            if (points == 10) {
+                won();
+                return;
+            }
             String level = Integer.toString(points);
             number.setText(level);
             droppie.changeEmotion(Emotion.Happiness);
@@ -131,6 +145,7 @@ public class FoodScreen {
     private boolean isRottenApple() {
         Random rand = new Random();
         int randomNum = rand.nextInt((3 - 1) + 1) + 1;
-        return randomNum % 2 != 0;
+     //   return randomNum % 2 != 0;
+        return false;
     }
 }

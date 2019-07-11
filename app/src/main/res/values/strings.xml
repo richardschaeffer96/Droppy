@@ -6,4 +6,7 @@
     Solltest du ihm einen schlechten Apfel füttern, wird Droppy traurig und du verlierst einen
     Vertrauenspunkt!. Erst wenn du beruhigend auf ihn einredest, gewinnt er sein
     Vertrauen zurück!</string>
+    <string name="won_headline">Du hast Gewonnen! :)</string>
+    <string name="won_content">Du hast das maximale Ergebnis erreicht! Die neuen Punkte werden
+    deinem Freundschaftslevel gut geschrieben!</string>
 </resources>
