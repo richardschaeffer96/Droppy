@@ -163,7 +163,7 @@ public class TFLiteClassifier {
         return str;
     }
 
-    public void recognizeEmotion(ArrayList<float[][]> seconds) {
+    public Emotion recognizeEmotion(ArrayList<float[][]> seconds) {
         String[]emotions={"happy","sad","angry","neutral","klopfen","husten","stille"};
         String model_name="emotionen_ENLARGED.lite";
         HashMap<Emotion,Integer> emo=new HashMap<>();
@@ -192,6 +192,18 @@ public class TFLiteClassifier {
         }
         System.out.println("Happiness: "+emo.get(Emotion.Happiness)+", Angry: "+emo.get(Emotion.Anger)+
                 ", Neutral: "+emo.get(Emotion.Neutral)+", Sad: "+emo.get(Emotion.Sadness));
+        int max=0;
+        Emotion maxEm=Emotion.Neutral;
+        i=0;
+        while(i<Emotion.values().length) {
+            Emotion cur=Emotion.values()[i];
+            if(emo.get(cur)>max) {
+                max=emo.get(cur);
+                maxEm=cur;
+            }
+            i++;
+        }
+        return maxEm;
     }
 
     private MappedByteBuffer loadModelFile(Activity activity, String MODEL_FILE) throws IOException {

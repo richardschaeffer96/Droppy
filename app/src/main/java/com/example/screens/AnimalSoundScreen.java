@@ -138,7 +138,12 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.won_screen);
+                                if(progressBar.getProgress()>=3) {
+                                    // YOU WON
+                                } else {
+                                    // YOU LOST
+
+                                }
                             }
                         });
                         break;

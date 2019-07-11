@@ -1,11 +1,13 @@
 package com.example.screens;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -65,8 +67,8 @@ public class CheerScreen implements Runnable {
             System.out.println("START RECORDING");
             recordHelper.startRecording();
         }
-
     }
+
 
     // Nach Aufnahme wird Emotion ausgewertet
     // Je nach Startsetting (wütend oder traurig) erhält man für REDEN oder LACHEN Punkte
@@ -158,7 +160,12 @@ public class CheerScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.won_screen);
+                                if(progressBar.getProgress()>=5) {
+                                    // YOU WON
+                                } else {
+                                    // YOU LOST
+
+                                }
                             }
                         });
                         break;
