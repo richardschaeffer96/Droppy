@@ -507,11 +507,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         popupMenu.show();
     }
 
-    private void changeLevel() {
+    public void changeLevel(Integer score) {
 
 
         if(level_bar.getProgress()!=100){
-            Integer add = 10 + level_bar.getProgress();
+            Integer add = score + level_bar.getProgress();
             level_bar.setProgress(add);
             //droppie.changeEmotion(Emotion.Happiness);
             try {
@@ -677,7 +677,16 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void deleteJokeView(Integer progress){
 
-        Double points = progress*0.1;
+        if(progress>80){
+            points=20;
+        }else if(progress>50&&progress<80){
+            points=15;
+        }else if(progress<50&&progress>30){
+            points=10;
+        }else if(progress<30){
+            points=0;
+        }
+
         jokeProgress = 100;
 
         level_header.setText("Level: ");
@@ -690,7 +699,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         if(points==0){
 
         }else{
-            changeLevel();
+            changeLevel(points);
         }
     }
 
