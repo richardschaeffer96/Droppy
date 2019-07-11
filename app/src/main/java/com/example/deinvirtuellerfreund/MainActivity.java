@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             level_bar.setProgress(levelbarauslesen("levelbar.txt"));
 
         }
+
         level_number = findViewById(R.id.level_number);
         if(fileIsExists("levelnumber.txt")){
 
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         //判断是否继续传递信号
                         if(moveTime>200&&(moveX>20||moveY>20)){
                             droppie.changeEmotion(Emotion.Happiness);
+                            changeLevel(20);
                             return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
@@ -314,6 +316,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             fis.read(buffer);
 
             fileContent = EncodingUtils.getString(buffer, "UTF-8");
+
+            System.out.println("IN DER FILE STEHT: " + fileContent);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -446,6 +450,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 activity.setContentView(R.layout.minigame_cheer);
                 new CheerScreen(activity);
                 break;
+            case "joke":
+                preJokeChallenge();
+                break;
             case "food":
                 activity.setContentView(R.layout.food_game);
                 new FoodScreen(activity, 0);
@@ -511,16 +518,18 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
 
     public void changeLevel(Integer score) {
+        System.out.println("!!!!!!! LEVEL IST:" + level_number.getText());
 
-        System.out.println("PROGRESS IST: " + level_bar.getProgress());
+        if(level_number.getText().equals("9")&&level_bar.getProgress()+score>=99){
 
-        if(level_bar.getProgress()<100){
-            Integer add = score + level_bar.getProgress();
-            level_bar.setProgress(add);
+            System.out.println("MAXIMALES LEVEL ERREICHT!");
+            level_bar.setProgress(99);
+
             try {
+                Integer newscore=level_bar.getProgress();
                 FileOutputStream fos = openFileOutput("levelbar.txt",
                         Context.MODE_PRIVATE);
-                String inputFileContext = add.toString();
+                String inputFileContext = "99";
                 fos.write(inputFileContext.getBytes());
                 fos.close();
             } catch (FileNotFoundException e) {
@@ -531,26 +540,65 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             if(fileIsExists("levelbar.txt")){
                 System.out.println("levelbar datein existiert" );
             }
-        } else {
-            System.out.println("!!!!!!! LEVEL UP !!!!!!!!!");
-            Integer level = Integer.parseInt(level_number.getText().toString());
-            level = level +1;
-            level_number.setText(level.toString());
-            level_bar.setProgress(0);
-            droppie.changeEmotion(Emotion.Neutral);
-            try {
-                FileOutputStream fos = openFileOutput("levelnumber.txt",
-                        Context.MODE_PRIVATE);
-                String inputFileContext = level.toString();
-                fos.write(inputFileContext.getBytes());
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(fileIsExists("levelnumber.txt")){
-                System.out.println("levelnumber datein existiert" );
+
+        }else{
+            System.out.println("PROGRESS IST: " + level_bar.getProgress());
+
+            if(level_bar.getProgress()+score>=100&&!level_number.getText().equals("9")) {
+                System.out.println("!!!!!!! LEVEL UP !!!!!!!!!");
+                Integer level = Integer.parseInt(level_number.getText().toString());
+                level = level +1;
+                level_number.setText(level.toString());
+                level_bar.setProgress(10);
+                droppie.changeEmotion(Emotion.Neutral);
+                try {
+                    FileOutputStream fos = openFileOutput("levelnumber.txt",
+                            Context.MODE_PRIVATE);
+                    String inputFileContext = level.toString();
+                    fos.write(inputFileContext.getBytes());
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(fileIsExists("levelnumber.txt")){
+                    System.out.println("levelnumber datein existiert" );
+                }
+
+                try {
+                    Integer newscore=level_bar.getProgress();
+                    FileOutputStream fos = openFileOutput("levelbar.txt",
+                            Context.MODE_PRIVATE);
+                    String inputFileContext = newscore.toString();
+                    fos.write(inputFileContext.getBytes());
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(fileIsExists("levelbar.txt")){
+                    System.out.println("levelbar datein existiert" );
+                }
+
+            }else{
+                Integer add = score + level_bar.getProgress();
+                level_bar.setProgress(add);
+                try {
+                    FileOutputStream fos = openFileOutput("levelbar.txt",
+                            Context.MODE_PRIVATE);
+                    String inputFileContext = add.toString();
+                    fos.write(inputFileContext.getBytes());
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(fileIsExists("levelbar.txt")){
+                    System.out.println("levelbar datein existiert" );
+                }
             }
         }
     }
@@ -684,7 +732,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         jokecount=0;
 
         if(progress>80){
-            points=50;
+            points=100;
         }else if(progress>50&&progress<80){
             points=15;
         }else if(progress<50&&progress>30){

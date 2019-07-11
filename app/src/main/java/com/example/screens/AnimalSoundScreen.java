@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -139,9 +140,9 @@ public class AnimalSoundScreen implements Runnable {
                             @Override
                             public void run() {
                                 if(progressBar.getProgress()>=3) {
-                                    // YOU WON
+                                    activity.setContentView(R.layout.won_screen);
                                 } else {
-                                    // YOU LOST
+                                    activity.setContentView(R.layout.gameover_screen);
 
                                 }
                             }

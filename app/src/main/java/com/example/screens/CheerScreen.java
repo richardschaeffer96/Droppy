@@ -161,9 +161,9 @@ public class CheerScreen implements Runnable {
                             @Override
                             public void run() {
                                 if(progressBar.getProgress()>=5) {
-                                    // YOU WON
+                                    activity.setContentView(R.layout.won_screen);
                                 } else {
-                                    // YOU LOST
+                                    activity.setContentView(R.layout.gameover_screen);
 
                                 }
                             }
