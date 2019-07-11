@@ -123,6 +123,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Animation animTalking;
     Droppie droppie;
 
+    private static float DownX = 0;
+    private static float DownY = 0;
+    private static float moveX = 0;
+    private static float moveY = 0;
+    private static long currentMS = 0;
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_INTERNET = 1;
@@ -183,29 +189,42 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         listRaw();
 
-        //TODO HELING
         collisionbox.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final int X = (int) event.getRawX();
-                final int Y = (int) event.getRawY();
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP:
+                        DownX = event.getX();//float DownX
+                        DownY = event.getY();//float DownY
+                        moveX = 0;
+                        moveY = 0;
+                        currentMS = System.currentTimeMillis();//long currentMS     获取系统时间
+                        System.out.println("TOUCH!!!!!!!!!!!!!");
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        droppie.changeEmotion(Emotion.Satisfied);
+                        System.out.println("TEST!!!!!!!!!!!!!");
+                        moveX += Math.abs(event.getX() - DownX);//X轴距离
+                        moveY += Math.abs(event.getY() - DownY);//y轴距离
+                        DownX = event.getX();
+                        DownY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        System.out.println("UP!!!!!!!!!!!!!");
+                        long moveTime = System.currentTimeMillis() - currentMS;//移动时间
+                        //判断是否继续传递信号
+                        if(moveTime>200&&(moveX>20||moveY>20)){
+                            droppie.changeEmotion(Emotion.Happiness);
+                            System.out.println("this ist a moveevent");
+                            return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
+                        } else {
+                            droppie.changeEmotion(Emotion.Poked);
+                            System.out.println("this is a tagevent");}
                         break;
                 }
-                return true;
+                return true;//继续执行后面的代码
             }
         });
-
-        //droppy.setTouchListener oder .setMotionListener
 
         info_overlay = new Dialog(this);
         talk = findViewById(R.id.Button_Micro);
@@ -245,7 +264,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             // permission not granted, initiate request
         //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         //} else {
-            createCameraSource();
+
+        createCameraSource();
         //}
 
         //taskLoadUp(city);
