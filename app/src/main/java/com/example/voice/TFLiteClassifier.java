@@ -16,6 +16,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TFLiteClassifier {
 
@@ -159,6 +161,37 @@ public class TFLiteClassifier {
         str=str.substring(0,str.length()-2)+"}";
 
         return str;
+    }
+
+    public void recognizeEmotion(ArrayList<float[][]> seconds) {
+        String[]emotions={"happy","sad","angry","neutral","klopfen","husten","stille"};
+        String model_name="emotionen_ENLARGED.lite";
+        HashMap<Emotion,Integer> emo=new HashMap<>();
+        emo.put(Emotion.Anger,0);
+        emo.put(Emotion.Happiness,0);
+        emo.put(Emotion.Neutral,0);
+        emo.put(Emotion.Sadness,0);
+        int i=0;
+        while(i<seconds.size()) {
+            String em = emotions[recognize(seconds.get(i),model_name,emotions.length)];
+            switch (em) {
+                case "happy":
+                    emo.put(Emotion.Happiness, emo.get(Emotion.Happiness) + 1);
+                    break;
+                case "neutral":
+                    emo.put(Emotion.Neutral, emo.get(Emotion.Neutral) + 1);
+                    break;
+                case "sad":
+                    emo.put(Emotion.Sadness, emo.get(Emotion.Sadness) + 1);
+                    break;
+                case "angry":
+                    emo.put(Emotion.Anger, emo.get(Emotion.Anger) + 1);
+                    break;
+            }
+            i++;
+        }
+        System.out.println("Happiness: "+emo.get(Emotion.Happiness)+", Angry: "+emo.get(Emotion.Anger)+
+                ", Neutral: "+emo.get(Emotion.Neutral)+", Sad: "+emo.get(Emotion.Sadness));
     }
 
     private MappedByteBuffer loadModelFile(Activity activity, String MODEL_FILE) throws IOException {

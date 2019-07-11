@@ -2,10 +2,36 @@ package com.example.voice;
 
 import com.example.voice.mfcc.MFCC;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Preprocessor {
 
+
+    public ArrayList<float[][]> cutAndPreprocess(short[]signal, int n_mfcc) {
+        ArrayList<float[][]>mels=new ArrayList<>();
+        float sr=16000;
+        float mean_signal_length=16000; // 16kHz*1sec=16kHz
+        while(true) {
+            float s_len=signal.length;
+            if (s_len < mean_signal_length) {
+                float pad_len = mean_signal_length - s_len;
+                float pad_rem = pad_len % 2;
+                pad_len = (int) ((double) pad_len / 2.0);
+                short[] insertBefore = new short[(int) pad_len];
+                short[] insertAfter = new short[(int) (pad_len + pad_rem)];
+                short[]cur = combine(insertBefore, signal);
+                cur = combine(signal, insertAfter);
+                mels.add(preprocessAudioFile(cur,n_mfcc));
+                break;
+            } else {
+                short[]cur=Arrays.copyOfRange(signal, (int) 0, (int) mean_signal_length);
+                mels.add(preprocessAudioFile(cur,n_mfcc));
+                signal=Arrays.copyOfRange(signal,(int)mean_signal_length,(int)signal.length);
+            }
+        }
+        return mels;
+    }
     // Preprocess audio file
     //
     //    Preprocess audio file
