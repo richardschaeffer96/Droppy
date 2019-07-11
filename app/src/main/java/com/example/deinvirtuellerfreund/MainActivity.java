@@ -37,9 +37,7 @@ import com.example.screens.AnimalSoundScreen;
 import com.example.screens.CheerScreen;
 import com.example.screens.FoodScreen;
 import com.example.screens.InfoOverlayScreen;
-import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
-import com.example.voice.TFLiteClassifier;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -63,72 +61,72 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.http.util.EncodingUtils;
-import org.w3c.dom.Text;
 
+/**
+ * "Droppy" is your virtual friend who recognizes your emotions. You can tell him about your day and
+ * he will cheer you up when you are sad. Your relationship with him can be improved through petting
+ * and mini-games.
+ *
+ * The emotion recognition was realized by 4 neural networks in Python:
+ * 1. Emotional face recognition (Conv2D)
+ * 2. audio analysis (Conv1D)
+ * 3. difference between laugh, talk, silence
+ * 4. different animal sounds
+ */
 
 public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
 
+    //Audio
     private RecordHelper recordHelper;
-    public static Activity activity;
 
+    //Camera
     private CameraPreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private CameraSource mCameraSource = null;
-
     private static final String TAG = "VideoFaceDetection";
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int RC_HANDLE_GMS = 2;
 
-    private String nextScreen;
-
-    MediaPlayer player;
-    Dialog info_overlay;
-    TextView info_header;
-    TextView info_text;
+    //MainActivityItems
+    public static Activity activity;
+    private Dialog info_overlay;
+    private TextView info_header;
+    private TextView info_text;
     public static ProgressBar level_bar;
-    public static Boolean inMinigame;
-    TextView level_number;
-    TextView level_header;
-    Field[] fields;
-    Boolean new_joke = true;
-    ArrayList<String> jokes = new ArrayList<String>();
-    Integer jokecount = 0;
+    private TextView level_number;
+    private TextView level_header;
+    private ImageView talk;
+    private ImageView eat;
+    private ImageView info;
+
+    //Attributes
+    private String nextScreen;
+    private MediaPlayer player;
+    public static Boolean inMinigame = false;
+    private Field[] fields;
+    private ArrayList<String> jokes = new ArrayList<String>();
+    private Integer jokecount = 0;
     public static Integer points = 0;
     public static Integer jokeProgress = 100;
 
     //BODY OF DROPPY
-    ImageView droppy;
-    ImageView eyebrows;
-    ImageView eyes;
-    ImageView mouth;
-    ImageView collisionbox;
+    private Droppie droppie = new Droppie(this);
+    private ImageView droppy;
+    private ImageView eyebrows;
+    private ImageView eyes;
+    private ImageView mouth;
 
-    ImageView talk;
-    ImageView eat;
-    ImageView info;
-    Typeface weatherFont;
-    TextView weather_icon;
-    String city = "80331";
-    String OPEN_WEATHER_MAP_API = "2edbde5bf49570bc94fde0a1051a5737";
-    /* Please Put your API KEY here */
-    // my api String OPEN_WEATHER_MAP_API = "36682bdc6277f8859ee8ae12f272ea9a";
-    /* Please Put your API KEY here */
-    Boolean check_button = false;
+    private Animation animMouth;
+    private Animation animTalking;
 
-    Animation animWobble;
-    Animation animEyes;
-    Animation animEyebrows;
-    Animation animMouth;
-    Animation animTalking;
-    Droppie droppie;
-
+    //Petting
     private static float DownX = 0;
     private static float DownY = 0;
     private static float moveX = 0;
     private static float moveY = 0;
     private static long currentMS = 0;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    //Requests
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_INTERNET = 1;
     private static final int REQUEST_RECORD_AUDIO = 1;
@@ -136,33 +134,25 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
     static Camera camera = null;
 
+
+    /**
+     * Creates our first screen and set values for attributes
+     *
+     * @param savedInstanceState
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activity = this;
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-        } else if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
-        }
+        setPermissions();
+        listRaw();
 
+        //findId
         level_header = findViewById(R.id.level_header);
-
+        level_number = findViewById(R.id.level_number);
         level_bar = findViewById(R.id.level_bar);
         if(fileIsExists("levelbar.txt")){
 
@@ -185,9 +175,28 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         eyebrows = findViewById(R.id.droppy_eyebrows);
         eyes = findViewById(R.id.droppy_eyes);
         mouth = findViewById(R.id.droppy_mouth);
-        collisionbox = findViewById(R.id.collisionbox);
+        ImageView collisionbox = findViewById(R.id.collisionbox);
+        talk = findViewById(R.id.Button_Micro);
+        eat = findViewById(R.id.Button_Eat);
+        info = findViewById(R.id.Button_Info);
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.faceOverlay);
 
-        listRaw();
+        setAnimations();
+
+        if (fileIsExists("levelbar.txt")) level_bar.setProgress(levelbarauslesen("levelbar.txt"));
+        if (fileIsExists("levelnumber.txt")) {
+            level_number.setText(levelnumberauslesen("levelnumber.txt"));
+        }
+
+        //init infoOverlay
+        info_overlay = new Dialog(this);
+        info_overlay.setContentView(R.layout.info_overlay);
+        info_header = info_overlay.findViewById(R.id.info_headline);
+        info_text = info_overlay.findViewById(R.id.info_text);
+
+        recordHelper = new RecordHelper(activity);
+        createCameraSource();
 
         collisionbox.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -216,36 +225,25 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                             return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
-                            }
+                        }
                         break;
                 }
                 return true;//继续执行后面的代码
             }
         });
+    }
 
-        info_overlay = new Dialog(this);
-
-        info_overlay.setContentView(R.layout.info_overlay);
-
-        info_header = info_overlay.findViewById(R.id.info_headline);
-        info_text = info_overlay.findViewById(R.id.info_text);
-
-        talk = findViewById(R.id.Button_Micro);
-        eat = findViewById(R.id.Button_Eat);
-        info = findViewById(R.id.Button_Info);
-        weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
-        weather_icon = findViewById(R.id.weather_icon);
-        weather_icon.setTypeface(weatherFont);
-
-        animWobble = AnimationUtils.loadAnimation(this, R.anim.wobbleanimation);
+    private void setAnimations() {
+        //Animations
+        Animation animWobble = AnimationUtils.loadAnimation(this, R.anim.wobbleanimation);
         animWobble.setAnimationListener(this);
         droppy.startAnimation(animWobble);
 
-        animEyes = AnimationUtils.loadAnimation(this, R.anim.eyesanimation);
+        Animation animEyes = AnimationUtils.loadAnimation(this, R.anim.eyesanimation);
         animEyes.setAnimationListener(this);
         eyes.startAnimation(animEyes);
 
-        animEyebrows = AnimationUtils.loadAnimation(this, R.anim.eyebrowsanimation);
+        Animation animEyebrows = AnimationUtils.loadAnimation(this, R.anim.eyebrowsanimation);
         animEyebrows.setAnimationListener(this);
         eyebrows.startAnimation(animEyebrows);
 
@@ -255,41 +253,27 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         animTalking = AnimationUtils.loadAnimation(this, R.anim.talkinganimation);
         animTalking.setAnimationListener(this);
+    }
 
-        activity = this;
-        recordHelper = new RecordHelper(activity);
-
-        mPreview = findViewById(R.id.preview);
-        mGraphicOverlay = findViewById(R.id.faceOverlay);
-
-
-        //if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+    private void setPermissions() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // permission not granted, initiate request
-        //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        //} else {
-
-        createCameraSource();
-        //}
-
-        //taskLoadUp(city);
-        talk.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if(recordHelper.getRecording()==false){
-                    recordHelper.startRecording();
-                    talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro_clicked));
-                } else {
-                    recordHelper.stopRecording();
-                    talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro));
-                    try {
-                        short[]signal=recordHelper.transformToWavData();
-                        new HowWasYourDayThread(activity,signal);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
+        }
     }
 
 
@@ -305,8 +289,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
         return true;
     }
-    public Integer levelbarauslesen(String filename){
-        String fileContent="";
+
+    public Integer levelbarauslesen(String filename) {
+        String fileContent = "";
 
         try {
             FileInputStream fis;
@@ -327,9 +312,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         return Integer.parseInt(fileContent);
     }
-    public String levelnumberauslesen(String filename){
-        String fileContent="";
 
+    public String levelnumberauslesen(String filename) {
+        String fileContent = "";
         try {
             FileInputStream fis;
             fis = openFileInput(filename);
@@ -346,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
         return fileContent;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
@@ -369,15 +355,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 .setRequestedFps(30.0f)
                 .build();
 
-        //camera sound off
-        AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
-
-        /*camera sound on
-        AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-	    mgr.setStreamMute(AudioManager.STREAM_SYSTEM, false);
-         */
-
     }
 
     /**
@@ -431,9 +410,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
 
-
-    public void info(View v){
-       // info_overlay.setContentView(R.layout.info_overlay);
+    public void info(View v) {
+        // info_overlay.setContentView(R.layout.info_overlay);
         info_header.setText(getResources().getString(R.string.info_headline));
         info_text.setText(getResources().getString(R.string.info_content));
         info_overlay.show();
@@ -441,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     }
 
-    public void close(View v){
+    public void close(View v) {
         info_overlay.hide();
 
         switch (nextScreen) {
@@ -469,9 +447,23 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
     }
 
-    //public void talk(View v){ }
+    public void talk(View v) {
+        if (!recordHelper.getRecording()) {
+            recordHelper.startRecording();
+            talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro_clicked));
+        } else {
+            recordHelper.stopRecording();
+            talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro));
+            try {
+                short[] signal = recordHelper.transformToWavData();
+                new HowWasYourDayThread(activity, signal);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public void feed(View v){
+    public void feed(View v) {
         PopupMenu popupMenu = new PopupMenu(MainActivity.this, eat);
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
 
@@ -481,22 +473,22 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 String gameTitle = (String) item.getTitle();
                 switch (gameTitle) {
                     case "Witze":
-                        nextScreen="joke";
+                        nextScreen = "joke";
                         info_header.setText(getResources().getString(R.string.joke_headline));
                         info_text.setText(getResources().getString(R.string.joke_content));
                         break;
                     case "Essen":
-                        nextScreen="food";
+                        nextScreen = "food";
                         info_header.setText(getResources().getString(R.string.food_headline));
                         info_text.setText(getResources().getString(R.string.food_content));
                         break;
                     case "Aufmuntern":
-                        nextScreen="cheer";
+                        nextScreen = "cheer";
                         info_header.setText(getResources().getString(R.string.cheer_headline));
                         info_text.setText(getResources().getString(R.string.cheer_content));
                         break;
                     case "Tiergeräusche":
-                        nextScreen="animal";
+                        nextScreen = "animal";
                         info_header.setText(getResources().getString(R.string.animal_headline));
                         info_text.setText(getResources().getString(R.string.animal_content));
                         break;
@@ -504,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
                 info_overlay.show();
 
-          //      Toast.makeText(MainActivity.this, "" + item.getTitle(), Toast.LENGTH_SHORT).show();
+                //      Toast.makeText(MainActivity.this, "" + item.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -512,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
 
-    public void backToMain(View v){
+    public void backToMain(View v) {
         Intent intent = new Intent(activity, MainActivity.class);
         activity.startActivity(intent);
     }
@@ -604,33 +596,32 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
     }
 
-    public void preJokeChallenge(){
-        for(int i=0; i<fields.length; i++){
+    public void preJokeChallenge() {
+        for (int i = 0; i < fields.length; i++) {
             jokes.add(fields[i].getName());
         }
 
         Collections.shuffle(jokes);
 
 
-        GraphicOverlay.delay_active=false;
+        GraphicOverlay.delay_active = false;
 
-        inMinigame=true;
+        inMinigame = true;
 
         jokeChallenge();
     }
 
 
+    public void tellJoke(View v) {
 
-    public void tellJoke(View v){
+        inMinigame = false;
 
-        inMinigame=false;
-
-        for(int i=0; i<fields.length; i++){
+        for (int i = 0; i < fields.length; i++) {
             jokes.add(fields[i].getName());
         }
 
         Collections.shuffle(jokes);
-        GraphicOverlay.delay_active=false;
+        GraphicOverlay.delay_active = false;
 
         String jokeString = jokes.get(0);
 
@@ -644,34 +635,34 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             @Override
             public void onCompletion(MediaPlayer mp) {
                 stopPlayer();
-                GraphicOverlay.delay_active=true;
-                if(points>=3){
+                GraphicOverlay.delay_active = true;
+                if (points >= 3) {
                     mouth.startAnimation(animMouth);
                     droppie.changeEmotion(Emotion.Happiness);
-                    points=0;
-                }else{
+                    points = 0;
+                } else {
                     mouth.startAnimation(animMouth);
                     droppie.changeEmotion(Emotion.Sadness);
-                    points=0;
+                    points = 0;
                 }
             }
         });
 
         player.start();
 
-        }
+    }
 
     public void jokeChallenge() {
 
         int max_jokes = 1;
 
-        if(jokeProgress<=0){
-            jokecount=max_jokes;
+        if (jokeProgress <= 0) {
+            jokecount = max_jokes;
         }
 
         setJokeView();
 
-        if(jokecount<max_jokes){
+        if (jokecount < max_jokes) {
 
             if (player == null) {
 
@@ -708,27 +699,26 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             }
         }
 
-        if(jokecount==max_jokes){
-            GraphicOverlay.delay_active=true;
-            inMinigame=false;
+        if (jokecount == max_jokes) {
+            GraphicOverlay.delay_active = true;
+            inMinigame = false;
             deleteJokeView(jokeProgress);
         }
 
     }
 
-    public void setJokeView(){
+    public void setJokeView() {
         level_header.setText("Durchhaltevermögen");
         level_number.setVisibility(View.INVISIBLE);
-        weather_icon.setVisibility(View.INVISIBLE);
         talk.setVisibility(View.INVISIBLE);
         eat.setVisibility(View.INVISIBLE);
         info.setVisibility(View.INVISIBLE);
         level_bar.setProgress(jokeProgress);
     }
 
-    public void deleteJokeView(Integer progress){
+    public void deleteJokeView(Integer progress) {
 
-        jokecount=0;
+        jokecount = 0;
 
         if(progress>80){
             points=100;
@@ -744,26 +734,24 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         level_header.setText("Level: ");
         level_number.setVisibility(View.VISIBLE);
-        weather_icon.setVisibility(View.VISIBLE);
         talk.setVisibility(View.VISIBLE);
         eat.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
         level_bar.setProgress(levelbarauslesen("levelbar.txt"));
-        if(points==0){
+        if (points == 0) {
 
-        }else{
+        } else {
             changeLevel(points);
 
         }
     }
 
-    public void listRaw(){
-        fields=R.raw.class.getFields();
-        for(int count=0; count < fields.length; count++){
+    public void listRaw() {
+        fields = R.raw.class.getFields();
+        for (int count = 0; count < fields.length; count++) {
             Log.i("Raw Asset: ", fields[count].getName());
         }
     }
-
 
 
     private void stopPlayer() {
@@ -801,16 +789,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
 
-
-    public void taskLoadUp(String query) {
-        if (Function.isNetworkAvailable(getApplicationContext())) {
-            DownloadWeather task = new DownloadWeather();
-            task.execute(query);
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void onAnimationStart(Animation animation) {
 
@@ -818,7 +796,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     @Override
     public void onAnimationEnd(Animation animation) {
-       // droppy.startAnimation(animWobble);
+        // droppy.startAnimation(animWobble);
     }
 
     @Override
@@ -826,60 +804,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     }
 
-
-    class DownloadWeather extends AsyncTask< String, Void, String > {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //loader.setVisibility(View.VISIBLE);
-
-        }
-        protected String doInBackground(String...args) {
-            String xml = Function.excuteGet("http://api.openweathermap.org/data/2.5/weather?q=" + args[0] +
-                    "&units=metric&appid=" + OPEN_WEATHER_MAP_API);
-            return xml;
-        }
-        @Override
-        protected void onPostExecute(String xml) {
-
-            try {
-                if (xml==null){
-
-                } else {
-                    JSONObject json = new JSONObject(xml);
-                    if (json != null) {
-                        JSONObject details = json.getJSONArray("weather").getJSONObject(0);
-                        JSONObject main = json.getJSONObject("main");
-                        DateFormat df = DateFormat.getDateTimeInstance();
-
-                        //cityField.setText(json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country"));
-                        //detailsField.setText(details.getString("description").toUpperCase(Locale.US));
-                        //currentTemperatureField.setText(String.format("%.2f", main.getDouble("temp")) + "°");
-                        //humidity_field.setText("Humidity: " + main.getString("humidity") + "%");
-                        //pressure_field.setText("Pressure: " + main.getString("pressure") + " hPa");
-                        //updatedField.setText(df.format(new Date(json.getLong("dt") * 1000)));
-                        weather_icon.setText(Html.fromHtml(Function.setWeatherIcon(details.getInt("id"),
-                                json.getJSONObject("sys").getLong("sunrise") * 1000,
-                                json.getJSONObject("sys").getLong("sunset") * 1000)));
-
-                        //loader.setVisibility(View.GONE);
-
-                    }
-                }
-            } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), "Error, Check City", Toast.LENGTH_SHORT).show();
-            }
-
-
-        }
-
-
-
-    }
-
-    public void update_weather(View v){
-        taskLoadUp(city);
-    }
 
     /**
      * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
