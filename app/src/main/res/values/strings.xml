@@ -13,4 +13,9 @@
     <string name="animal_headline">Imitiere Tiergeräusche!</string>
     <string name="cheer_headline">Muntere Dropsy auf!</string>
     <string name="cheer_content">"In diesem Minispiel musst du Dropsy aufmuntern. Ist Dropsy traurig, so lache möglichst fröhlich, um ihn anzustecken. Ist Dropsy hingegen wütend, so rede beruhigend auf ihn ein. Sagst du jedoch gar nichts oder wirkst nicht überzeugend genug,verunsicherst du Droppy weiter. Leg dich ins Zeug, um Dropsy aufzumuntern!"</string>
+    <string name="joke_headline">Wer lacht verliert!</string>
+    <string name="joke_content">Die Herausforderung bei diesem Spiel liegt darin nicht zu lachen oder grinsen, während dir Droppy Witze erzählt. Sobald du schmunzelst nimmt der "Durchhalte-Balken! ab! Viel Glück!!</string>
+    <string name="info_headline">Hallo ich bin Droppy</string>
+    <string name="info_content">Droppy ist dein virtueller Freund. Er muntert dich auf, wenn du traurig bist und hört dir zu, wenn du von deinem Tag erzählst. Du hast die Möglichkeit deine Beziehung zu ihm zu verbessern, indem du ihn zum Beispiel streichelst oder kleine Spiele mit ihm spielst!!</string>
+    <string name="sjasjjka">sjasjjka</string>
 </resources>
