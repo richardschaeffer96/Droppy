@@ -135,7 +135,7 @@ public class Preprocessor {
 
     private double[]shortToDouble(short[]shortInput) {
         double[] doubleInputBuffer = new double[shortInput.length];
-        // We need to feed in float values between -1.0 and 1.0, so divide the
+        // We need to play in float values between -1.0 and 1.0, so divide the
         // signed 16-bit inputs.
         for (int i = 0; i < shortInput.length; ++i) {
             doubleInputBuffer[i] = shortInput[i] / 32767.0;

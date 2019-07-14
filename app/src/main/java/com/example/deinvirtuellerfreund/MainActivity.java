@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -37,9 +38,7 @@ import com.example.screens.AnimalSoundScreen;
 import com.example.screens.CheerScreen;
 import com.example.screens.FoodScreen;
 import com.example.screens.InfoOverlayScreen;
-import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
-import com.example.voice.TFLiteClassifier;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -63,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.http.util.EncodingUtils;
-import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity implements Animation.AnimationListener {
@@ -85,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Dialog info_overlay;
     TextView info_header;
     TextView info_text;
+    TextView simple_header;
+    TextView simple_text;
     public static ProgressBar level_bar;
     public static Boolean inMinigame;
     TextView level_number;
@@ -103,8 +103,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     ImageView mouth;
     ImageView collisionbox;
 
+    Dialog minigames_overlay;
+
+    Dialog simple_overlay;
     ImageView talk;
-    ImageView eat;
+    ImageView play;
     ImageView info;
     Typeface weatherFont;
     TextView weather_icon;
@@ -224,14 +227,20 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         });
 
         info_overlay = new Dialog(this);
-
+        simple_overlay = new Dialog(this);
         info_overlay.setContentView(R.layout.info_overlay);
+        simple_overlay.setContentView(R.layout.simple_overlay);
+        minigames_overlay = new Dialog(this);
+        minigames_overlay.setContentView(R.layout.minigames_overlay);
 
         info_header = info_overlay.findViewById(R.id.info_headline);
         info_text = info_overlay.findViewById(R.id.info_text);
 
+        simple_header = simple_overlay.findViewById(R.id.simple_headline);
+        simple_text = simple_overlay.findViewById(R.id.simple_text);
+
         talk = findViewById(R.id.Button_Micro);
-        eat = findViewById(R.id.Button_Eat);
+        play = findViewById(R.id.Button_Play);
         info = findViewById(R.id.Button_Info);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weather_icon = findViewById(R.id.weather_icon);
@@ -277,10 +286,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             public void onClick(View v) {
                 if(recordHelper.getRecording()==false){
                     recordHelper.startRecording();
-                    talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro_clicked));
+                    //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
                 } else {
                     recordHelper.stopRecording();
-                    talk.setImageDrawable(getResources().getDrawable(R.drawable.button_micro));
+                    //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
                     try {
                         short[]signal=recordHelper.transformToWavData();
                         new HowWasYourDayThread(activity,signal);
@@ -433,16 +442,25 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
 
     public void info(View v){
-       // info_overlay.setContentView(R.layout.info_overlay);
-        info_header.setText(getResources().getString(R.string.info_headline));
-        info_text.setText(getResources().getString(R.string.info_content));
-        info_overlay.show();
+        simple_header.setText(getResources().getString(R.string.info_headline));
+        simple_text.setText(getResources().getString(R.string.info_content));
+
+        simple_overlay.show();
+
         nextScreen = "info";
 
     }
 
     public void close(View v){
+        simple_overlay.hide();
         info_overlay.hide();
+        minigames_overlay.hide();
+    }
+
+    public void check(View v){
+        minigames_overlay.hide();
+        info_overlay.hide();
+        simple_overlay.hide();
 
         switch (nextScreen) {
             case "info":
@@ -471,8 +489,40 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     //public void talk(View v){ }
 
-    public void feed(View v){
-        PopupMenu popupMenu = new PopupMenu(MainActivity.this, eat);
+    public void play(View v){
+        minigames_overlay.show();
+    }
+
+    public void jokeMinigame(View v){
+        nextScreen="joke";
+        info_header.setText(getResources().getString(R.string.joke_headline));
+        info_text.setText(getResources().getString(R.string.joke_content));
+        info_overlay.show();
+    }
+
+    public void feedMinigame(View v){
+        nextScreen="food";
+        info_header.setText(getResources().getString(R.string.food_headline));
+        info_text.setText(getResources().getString(R.string.food_content));
+        info_overlay.show();
+    }
+
+    public void animalsMinigame(View v){
+        nextScreen="animal";
+        info_header.setText(getResources().getString(R.string.animal_headline));
+        info_text.setText(getResources().getString(R.string.animal_content));
+        info_overlay.show();
+    }
+
+    public void cheerMinigame(View v){
+        nextScreen="cheer";
+        info_header.setText(getResources().getString(R.string.cheer_headline));
+        info_text.setText(getResources().getString(R.string.cheer_content));
+        info_overlay.show();
+    }
+
+        /*
+        PopupMenu popupMenu = new PopupMenu(MainActivity.this, play);
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -509,7 +559,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             }
         });
         popupMenu.show();
-    }
+
+        */
+
+
 
 
     public void backToMain(View v){
@@ -717,11 +770,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void setJokeView(){
-        level_header.setText("Durchhaltevermögen");
+        level_header.setText("Ausdauer");
         level_number.setVisibility(View.INVISIBLE);
         weather_icon.setVisibility(View.INVISIBLE);
         talk.setVisibility(View.INVISIBLE);
-        eat.setVisibility(View.INVISIBLE);
+        play.setVisibility(View.INVISIBLE);
         info.setVisibility(View.INVISIBLE);
         level_bar.setProgress(jokeProgress);
     }
@@ -746,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         level_number.setVisibility(View.VISIBLE);
         weather_icon.setVisibility(View.VISIBLE);
         talk.setVisibility(View.VISIBLE);
-        eat.setVisibility(View.VISIBLE);
+        play.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
         level_bar.setProgress(levelbarauslesen("levelbar.txt"));
         if(points==0){

@@ -4,7 +4,7 @@
         <shape>
             <corners android:radius="10dp"/>
             <solid android:color="@color/colorAccent"/>
-            <stroke android:color="#000000" android:width="3dp" />
+            <stroke android:color="@color/colorPrimaryDark" android:width="3dp" />
         </shape>
     </item>
 
@@ -17,7 +17,7 @@
             <scale android:scaleWidth="100%" >
                 <shape>
                     <corners android:radius="10dp"/>
-                    <solid android:color="@color/colorPrimaryDark"/>
+                    <solid android:color="@color/colorPrimary"/>
                 </shape>
             </scale>
         </clip>

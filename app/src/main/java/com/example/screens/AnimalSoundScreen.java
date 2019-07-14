@@ -1,6 +1,8 @@
 package com.example.screens;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ public class AnimalSoundScreen implements Runnable {
         activity.setContentView(R.layout.minigame_animals);
         tvCurAn=activity.findViewById(R.id.cur_animal);
         tvWantedAn=activity.findViewById(R.id.wanted_animal);
+        wantedAnImage=activity.findViewById(R.id.wanted_animal_pic);
         tvSecs = activity.findViewById(R.id.seconds_left_animals);
         tvSecs.setText(secsLeft + " s");
         time = System.currentTimeMillis();
@@ -39,6 +42,8 @@ public class AnimalSoundScreen implements Runnable {
     private Random r=new Random();
     private TextView tvCurAn;
     private TextView tvWantedAn;
+    private ImageView wantedAnImage;
+    private Drawable drawable;
 
 
     private String[] animals ={"Katze","Hund","Schwein","Schaf"};
@@ -54,6 +59,15 @@ public class AnimalSoundScreen implements Runnable {
         progressBar.setProgress(1);
         int ind=r.nextInt(animals.length);
         tvWantedAn.setText(animals[ind]);
+        if(animals[ind]=="Katze"){
+            wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
+        }else if(animals[ind]=="Hund"){
+            wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.dog));
+        }else if(animals[ind]=="Schwein"){
+            wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.pig));
+        }else{
+            wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.sheep));
+        }
     }
 
     // Nimmt einen beim Sprechen auf
@@ -73,7 +87,18 @@ public class AnimalSoundScreen implements Runnable {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=progressBar.getProgress()+1;
             progressBar.setProgress(cur);
-            tvWantedAn.setText(animals[r.nextInt(animals.length)]);
+            int rand = r.nextInt(animals.length);
+            tvWantedAn.setText(animals[rand]);
+
+            if(animals[rand]=="Katze"){
+                wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
+            }else if(animals[rand]=="Hund"){
+                wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.dog));
+            }else if(animals[rand]=="Schwein"){
+                wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.pig));
+            }else{
+                wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.sheep));
+            }
         }
     }
 
