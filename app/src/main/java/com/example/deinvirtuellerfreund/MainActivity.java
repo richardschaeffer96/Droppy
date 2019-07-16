@@ -55,6 +55,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.SimpleTimeZone;
+
 import org.apache.http.util.EncodingUtils;
 public class MainActivity extends AppCompatActivity {
 
@@ -184,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean fileIsExists(String filename) {
         try {
             String AbsolutePath = getFilesDir().getAbsolutePath();
+
             File f = new File(AbsolutePath + "/" + filename);
             if (!f.exists()) {
                 return false;
