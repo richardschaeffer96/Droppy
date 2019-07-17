@@ -147,21 +147,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_INTERNET);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-        } else if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_NETWORK_STATE);
+
         }
 
         level_header = findViewById(R.id.level_header);
@@ -215,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         //判断是否继续传递信号
                         if(moveTime>200&&(moveX>20||moveY>20)){
                             droppie.changeEmotion(Emotion.Happiness);
-                            changeLevel(20);
+                            changeLevel(1);
                             return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
@@ -284,19 +270,29 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         talk.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(recordHelper.getRecording()==false){
-                    recordHelper.startRecording();
-                    //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
+
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    // permission not granted, initiate request
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_INTERNET);
+                }else if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // permission not granted, initiate request
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
                 } else {
-                    recordHelper.stopRecording();
-                    //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
-                    try {
-                        short[]signal=recordHelper.transformToWavData();
-                        new HowWasYourDayThread(activity,signal);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if(recordHelper.getRecording()==false){
+                        recordHelper.startRecording();
+                        //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
+                    } else {
+                        recordHelper.stopRecording();
+                        //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
+                        try {
+                            short[]signal=recordHelper.transformToWavData();
+                            new HowWasYourDayThread(activity,signal);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+
             }
         });
     }
@@ -363,29 +359,32 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     private void createCameraSource() {
-        Context context = getApplicationContext();
-        FaceDetector detector = new FaceDetector.Builder(context)
-                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
-                .build();
 
-        detector.setProcessor(
-                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
-                        .build());
+            Context context = getApplicationContext();
+            FaceDetector detector = new FaceDetector.Builder(context)
+                    .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                    .build();
 
-        mCameraSource = new CameraSource.Builder(context, detector)
-                .setRequestedPreviewSize(640, 480)
-                .setFacing(CameraSource.CAMERA_FACING_FRONT)
-                .setRequestedFps(30.0f)
-                .build();
+            detector.setProcessor(
+                    new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
+                            .build());
 
-        //camera sound off
-        AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+            mCameraSource = new CameraSource.Builder(context, detector)
+                    .setRequestedPreviewSize(640, 480)
+                    .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                    .setRequestedFps(30.0f)
+                    .build();
+
+            //camera sound off
+            AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+            mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
 
         /*camera sound on
         AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 	    mgr.setStreamMute(AudioManager.STREAM_SYSTEM, false);
          */
+
+
 
     }
 
@@ -490,7 +489,15 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     //public void talk(View v){ }
 
     public void play(View v){
-        minigames_overlay.show();
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted, initiate request
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_INTERNET);
+        }else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
+        }else{
+            minigames_overlay.show();
+        }
     }
 
     public void jokeMinigame(View v){
@@ -572,6 +579,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
 
     public void changeLevel(Integer score) {
+
         System.out.println("!!!!!!! LEVEL IST:" + level_number.getText());
 
         if(level_number.getText().equals("9")&&level_bar.getProgress()+score>=99){

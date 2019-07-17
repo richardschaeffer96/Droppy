@@ -138,7 +138,7 @@ public class FoodScreen {
     private boolean isRottenApple() {
         Random rand = new Random();
         int randomNum = rand.nextInt((3 - 1) + 1) + 1;
-        //return randomNum % 2 != 0;
-        return false;
+        return randomNum % 2 != 0;
+        //return false;
     }
 }
