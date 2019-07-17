@@ -36,7 +36,7 @@ public class AnimalSoundScreen implements Runnable {
     private static TextView tvSecs;
     private double time;
     private double dTime;
-    private int secsLeft=15;
+    private int secsLeft=25;
     private Thread clockThread = null;
     private RecordHelper recordHelper;
     private Random r=new Random();
@@ -88,7 +88,7 @@ public class AnimalSoundScreen implements Runnable {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=progressBar.getProgress()+1;
             progressBar.setProgress(cur);
-            int rand = r.nextInt(animals.length);
+            int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
             if(animals[rand]=="Katze"){
@@ -166,7 +166,11 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_main);
+                                if(progressBar.getProgress()>=3) {
+                                    activity.setContentView(R.layout.won_screen);
+                                } else {
+                                    activity.setContentView(R.layout.gameover_screen);
+                                }
                             }
                         });
                         break;
@@ -177,7 +181,16 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvWantedAn.setText(animals[r.nextInt(4)]);
+                                int ind=r.nextInt(4);
+                                if(animals[ind]=="Katze"){
+                                    wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
+                                }else if(animals[ind]=="Hund"){
+                                    wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.dog));
+                                }else if(animals[ind]=="Schwein"){
+                                    wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.pig));
+                                }else{
+                                    wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.sheep));
+                                }
                             }
                         });
                     }
