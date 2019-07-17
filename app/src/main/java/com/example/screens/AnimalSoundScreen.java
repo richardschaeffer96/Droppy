@@ -24,7 +24,7 @@ public class AnimalSoundScreen implements Runnable {
         tvWantedAn=activity.findViewById(R.id.wanted_animal);
         wantedAnImage=activity.findViewById(R.id.wanted_animal_pic);
         tvSecs = activity.findViewById(R.id.seconds_left_animals);
-        tvSecs.setText(secsLeft + " s");
+        tvSecs.setText(""+secsLeft);
         time = System.currentTimeMillis();
         recordHelper=new RecordHelper(activity);
         initStartCondition();
@@ -56,7 +56,7 @@ public class AnimalSoundScreen implements Runnable {
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
         tv_progress=activity.findViewById(R.id.number_animals);
-        tv_progress.setText(0);
+        tv_progress.setText("0");
         int ind=r.nextInt(animals.length);
         tvWantedAn.setText(animals[ind]);
         if(animals[ind]=="Katze"){
@@ -86,7 +86,7 @@ public class AnimalSoundScreen implements Runnable {
         if(tvWantedAn.getText().equals(tvCurAn.getText())) {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=Integer.parseInt(tv_progress.getText().toString())+1;
-            tv_progress.setText(cur);
+            tv_progress.setText(""+cur);
             int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
@@ -157,7 +157,7 @@ public class AnimalSoundScreen implements Runnable {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tvSecs.setText(secsLeft + " s");
+                            tvSecs.setText(""+secsLeft);
                         }
                     });
                     if (secsLeft <= 0) {

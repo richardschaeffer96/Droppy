@@ -781,7 +781,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void jokeClose(View v){
-        //TODO MAKE
         stopPlayer();
         jokeProgress=0;
         GraphicOverlay.delay_active=true;
