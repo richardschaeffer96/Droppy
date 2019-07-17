@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.AudioManager;
@@ -683,7 +684,13 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         jokeChallenge();
     }
 
-
+    public void saySentence(String filename) throws IOException {
+        AssetFileDescriptor afd = getAssets().openFd(filename);
+        player = new MediaPlayer();
+        player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+        player.prepare();
+        player.start();
+    }
 
     public void tellJoke(View v){
 
