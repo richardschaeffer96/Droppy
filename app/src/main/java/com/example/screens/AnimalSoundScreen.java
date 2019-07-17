@@ -31,7 +31,7 @@ public class AnimalSoundScreen implements Runnable {
         start();
     }
 
-    private ProgressBar progressBar;
+    private TextView tv_progress;
     private Activity activity;
     private static TextView tvSecs;
     private double time;
@@ -55,9 +55,8 @@ public class AnimalSoundScreen implements Runnable {
 
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
-        progressBar=activity.findViewById(R.id.emotion_bar);
-        progressBar.setMax(10);
-        progressBar.setProgress(1);
+        tv_progress=activity.findViewById(R.id.number_animals);
+        tv_progress.setText(0);
         int ind=r.nextInt(animals.length);
         tvWantedAn.setText(animals[ind]);
         if(animals[ind]=="Katze"){
@@ -86,8 +85,8 @@ public class AnimalSoundScreen implements Runnable {
         tvCurAn.setText(an);
         if(tvWantedAn.getText().equals(tvCurAn.getText())) {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
-            int cur=progressBar.getProgress()+1;
-            progressBar.setProgress(cur);
+            int cur=Integer.parseInt(tv_progress.getText().toString())+1;
+            tv_progress.setText(cur);
             int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
@@ -166,7 +165,7 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(progressBar.getProgress()>=3) {
+                                if(Integer.parseInt(tv_progress.getText().toString())>=3) {
                                     activity.setContentView(R.layout.won_screen);
                                     ((MainActivity)activity).changeLevel(10);
                                 } else {
