@@ -727,7 +727,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void jokeChallenge() {
 
-        int max_jokes = 1;
+        int max_jokes = 4;
 
         if(jokeProgress<=0){
             jokecount=max_jokes;
@@ -781,8 +781,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void jokeClose(View v){
-        //TODO MAKE 
+        //TODO MAKE
+        stopPlayer();
         jokeProgress=0;
+        GraphicOverlay.delay_active=true;
+        inMinigame=false;
+        deleteJokeView(jokeProgress);
     }
 
     public void setJokeView(){
