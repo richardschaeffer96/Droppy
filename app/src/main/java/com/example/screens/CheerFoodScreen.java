@@ -45,7 +45,7 @@ public class CheerFoodScreen implements Runnable {
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
         progressBar = activity.findViewById(R.id.emotion_bar);
-        progressBar.setMax(7);
+        progressBar.setMax(8);
         progressBar.setProgress(1);
         droppie = new Droppie(activity);
         droppie.changeEmotion(Emotion.Sadness);
@@ -68,9 +68,9 @@ public class CheerFoodScreen implements Runnable {
 
         if (success) {
             int cur = progressBar.getProgress() + 1;
-            if (cur == 2) {
+            if (cur == 3) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if (cur == 3) {
+            } else if (cur == 5) {
                 droppie.changeEmotion(Emotion.Happiness);
                 won = true;
             }

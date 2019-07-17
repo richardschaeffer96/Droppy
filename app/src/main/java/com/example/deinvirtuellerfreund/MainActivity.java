@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     TextView info_text;
     TextView simple_header;
     TextView simple_text;
+    TextView talkText;
     public static ProgressBar level_bar;
     public static Boolean inMinigame;
     TextView level_number;
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         }
 
         level_number = findViewById(R.id.level_number);
+        talkText = findViewById(R.id.talk_text);
         if(fileIsExists("levelnumber.txt")){
 
             level_number.setText(levelnumberauslesen("levelnumber.txt"));
@@ -285,10 +287,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     if(recordHelper.getRecording()==false){
                         talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
                         recordHelper.startRecording();
+                        talkText.setVisibility(View.VISIBLE);
                         //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
                     } else {
                         talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
                         recordHelper.stopRecording();
+                        talkText.setVisibility(View.INVISIBLE);
                         //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
                         try {
                             short[]signal=recordHelper.transformToWavData();
