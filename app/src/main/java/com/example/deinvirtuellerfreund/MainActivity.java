@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     Dialog minigames_overlay;
 
     Dialog simple_overlay;
+    ImageView jokeClose;
     ImageView talk;
     ImageView play;
     ImageView info;
@@ -225,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         simple_header = simple_overlay.findViewById(R.id.simple_headline);
         simple_text = simple_overlay.findViewById(R.id.simple_text);
 
+        jokeClose = findViewById(R.id.button_jokeclose);
+        jokeClose.setVisibility(View.INVISIBLE);
         talk = findViewById(R.id.Button_Micro);
         play = findViewById(R.id.Button_Play);
         info = findViewById(R.id.Button_Info);
@@ -724,7 +727,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     public void jokeChallenge() {
 
-        int max_jokes = 1;
+        int max_jokes = 4;
 
         if(jokeProgress<=0){
             jokecount=max_jokes;
@@ -777,7 +780,17 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     }
 
+    public void jokeClose(View v){
+        //TODO MAKE
+        stopPlayer();
+        jokeProgress=0;
+        GraphicOverlay.delay_active=true;
+        inMinigame=false;
+        deleteJokeView(jokeProgress);
+    }
+
     public void setJokeView(){
+        jokeClose.setVisibility(View.VISIBLE);
         level_header.setText("Ausdauer");
         level_number.setVisibility(View.INVISIBLE);
         weather_icon.setVisibility(View.INVISIBLE);
@@ -804,6 +817,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         jokeProgress = 100;
 
         level_header.setText("Level: ");
+        jokeClose.setVisibility(View.INVISIBLE);
         level_number.setVisibility(View.VISIBLE);
         weather_icon.setVisibility(View.VISIBLE);
         talk.setVisibility(View.VISIBLE);
