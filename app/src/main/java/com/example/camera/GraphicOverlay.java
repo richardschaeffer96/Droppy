@@ -143,7 +143,7 @@ public class GraphicOverlay extends View implements SurfaceHolder.Callback {
                 double curTime=System.currentTimeMillis();
                 dTime+=curTime-time;
                 time=curTime;
-                if(dTime>5000f){
+                if(dTime>3000f){
                     dTime=0;
                     Object var2 = this.mLock;
                     synchronized (this.mLock) {
