@@ -22,7 +22,7 @@ public class CheerScreen implements Runnable {
         this.activity = activity;
         activity.setContentView(R.layout.minigame_cheer);
         tvSecs = activity.findViewById(R.id.seconds_left);
-        tvSecs.setText(secsLeft + " s");
+        tvSecs.setText(""+secsLeft);
         time = System.currentTimeMillis();
         recordHelper=new RecordHelper(activity);
         initStartCondition();
@@ -152,7 +152,7 @@ public class CheerScreen implements Runnable {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tvSecs.setText(secsLeft + " s");
+                            tvSecs.setText(""+secsLeft);
                         }
                     });
                     if (secsLeft <= 0) {

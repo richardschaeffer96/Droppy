@@ -283,9 +283,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
                 } else {
                     if(recordHelper.getRecording()==false){
+                        talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
                         recordHelper.startRecording();
                         //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro_clicked));
                     } else {
+                        talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
                         recordHelper.stopRecording();
                         //talk.setImageDrawable(getResources().getDrawable(R.drawable.buttonmicro));
                         try {
@@ -788,7 +790,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     public void jokeClose(View v){
-        //TODO MAKE
         stopPlayer();
         jokeProgress=0;
         GraphicOverlay.delay_active=true;

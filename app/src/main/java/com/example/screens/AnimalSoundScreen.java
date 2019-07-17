@@ -24,7 +24,7 @@ public class AnimalSoundScreen implements Runnable {
         tvWantedAn=activity.findViewById(R.id.wanted_animal);
         wantedAnImage=activity.findViewById(R.id.wanted_animal_pic);
         tvSecs = activity.findViewById(R.id.seconds_left_animals);
-        tvSecs.setText(secsLeft + " s");
+        tvSecs.setText(""+secsLeft);
         time = System.currentTimeMillis();
         recordHelper=new RecordHelper(activity);
         initStartCondition();
@@ -48,7 +48,7 @@ public class AnimalSoundScreen implements Runnable {
 
 
     private String[] animals ={"Katze","Hund","Schwein","Schaf", "Neutral", "Stille"};
-    private String modelFile="tiergeräusche_3_seks.lite";
+    private String modelFile="tiergeräusche_3_seks_claudia.lite";
     private int startInd=0;
 
 
@@ -86,7 +86,7 @@ public class AnimalSoundScreen implements Runnable {
         if(tvWantedAn.getText().equals(tvCurAn.getText())) {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=Integer.parseInt(tv_progress.getText().toString())+1;
-            tv_progress.setText(""+cur);
+            tv_progress.setText(cur);
             int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
