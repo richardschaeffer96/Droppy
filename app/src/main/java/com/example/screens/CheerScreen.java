@@ -89,12 +89,12 @@ public class CheerScreen implements Runnable {
         }
         if(success==true) {
             int cur=progressBar.getProgress()+1;
-            if(cur==5) {
+            if(cur==2) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==7) {
+            } else if(cur==3) {
                 droppie.changeEmotion(Emotion.Happiness);
             }
-            progressBar.setProgress(cur);
+            progressBar.setProgress(cur + 1);
         }
     }
 
