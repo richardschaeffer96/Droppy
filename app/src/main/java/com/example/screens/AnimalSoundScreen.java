@@ -47,7 +47,7 @@ public class AnimalSoundScreen implements Runnable {
     private int change=0;
 
 
-    private String[] animals ={"Katze","Hund","Schwein","Schaf"};
+    private String[] animals ={"Katze","Hund","Schwein","Schaf","Neutral","Stille"};
     private String modelFile="tiergeräusche_3_seks_claudia.lite";
     private int startInd=0;
 
@@ -166,7 +166,11 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.activity_main);
+                                if(progressBar.getProgress()>=3) {
+                                    activity.setContentView(R.layout.won_screen);
+                                } else {
+                                    activity.setContentView(R.layout.gameover_screen);
+                                }
                             }
                         });
                         break;
