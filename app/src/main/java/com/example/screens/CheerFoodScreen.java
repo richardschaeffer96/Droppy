@@ -70,7 +70,7 @@ public class CheerFoodScreen implements Runnable {
             int cur = progressBar.getProgress() + 1;
             if (cur == 2) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if (cur == 4) {
+            } else if (cur == 3) {
                 droppie.changeEmotion(Emotion.Happiness);
                 won = true;
             }
@@ -145,6 +145,9 @@ public class CheerFoodScreen implements Runnable {
                                 if (won) {
                                     new FoodScreen(activity, points + 2);
                                 } else {
+                                    if (points < 0) {
+                                        points = 0;
+                                    }
                                     new FoodScreen(activity, points);
                                 }
                             }

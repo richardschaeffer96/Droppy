@@ -31,7 +31,7 @@ public class FoodScreen {
 
     @SuppressLint("SetTextI18n")
     public FoodScreen(final Activity activity, int points) {
-        if (points == 10) {
+        if (points == 6) {
             won();
         }
         this.activity = activity;
@@ -50,7 +50,7 @@ public class FoodScreen {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                won();
+                activity.setContentView(R.layout.gameover_screen);
             }
         });
 
@@ -91,12 +91,7 @@ public class FoodScreen {
     }
 
     private void won() {
-        if (points > 4 && points < 8 && activity instanceof MainActivity) {
-            ((MainActivity) activity).changeLevel(10);
-        }
-        if (points >= 8 && activity instanceof MainActivity) {
-            ((MainActivity) activity).changeLevel(15);
-        }
+        ((MainActivity) activity).changeLevel(10);
         activity.setContentView(R.layout.won_screen);
     }
 
@@ -121,7 +116,7 @@ public class FoodScreen {
             new CheerFoodScreen(activity, points);
         } else {
             points++;
-            if (points == 10) {
+            if (points == 6) {
                 won();
                 return;
             }
@@ -139,6 +134,5 @@ public class FoodScreen {
         Random rand = new Random();
         int randomNum = rand.nextInt((3 - 1) + 1) + 1;
         return randomNum % 2 != 0;
-        //return false;
     }
 }

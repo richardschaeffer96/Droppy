@@ -962,5 +962,4 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             return new GraphicFaceTracker(mGraphicOverlay);
         }
     }
-
 }
