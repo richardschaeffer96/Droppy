@@ -162,6 +162,7 @@ public class CheerScreen implements Runnable {
                             public void run() {
                                 if(progressBar.getProgress()>=5) {
                                     activity.setContentView(R.layout.won_screen);
+                                    ((MainActivity)activity).changeLevel(5);
                                 } else {
                                     activity.setContentView(R.layout.gameover_screen);
 
