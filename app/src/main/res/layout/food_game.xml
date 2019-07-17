@@ -136,8 +136,8 @@
 
     <ImageView
         android:id="@+id/rotten_apple"
-        android:layout_width="168dp"
-        android:layout_height="166dp"
+        android:layout_width="149dp"
+        android:layout_height="122dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
