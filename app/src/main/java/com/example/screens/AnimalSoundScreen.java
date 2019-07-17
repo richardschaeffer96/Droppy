@@ -48,7 +48,7 @@ public class AnimalSoundScreen implements Runnable {
 
 
     private String[] animals ={"Katze","Hund","Schwein","Schaf", "Neutral", "Stille"};
-    private String modelFile="tiergeräusche_3_seks_claudia.lite";
+    private String modelFile="tiergeräusche_3_seks.lite";
     private int startInd=0;
 
 
