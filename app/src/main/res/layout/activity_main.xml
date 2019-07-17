@@ -169,7 +169,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="9dp"
-        android:onClick="close"
+        android:onClick="jokeClose"
         android:src="@drawable/close_change"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
