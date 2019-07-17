@@ -86,7 +86,7 @@ public class AnimalSoundScreen implements Runnable {
         if(tvWantedAn.getText().equals(tvCurAn.getText())) {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=Integer.parseInt(tv_progress.getText().toString())+1;
-            tv_progress.setText(cur);
+            tv_progress.setText(""+cur);
             int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
