@@ -124,7 +124,7 @@ public class CheerScreen implements Runnable {
         }
     }
 
-    // Starte einen Thread
+    // starte thread
     public void start() {
         if (clockThread == null) {
             clockThread = new Thread(this, "Clock");

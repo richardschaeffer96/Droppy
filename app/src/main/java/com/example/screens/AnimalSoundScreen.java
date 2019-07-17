@@ -44,10 +44,11 @@ public class AnimalSoundScreen implements Runnable {
     private TextView tvWantedAn;
     private ImageView wantedAnImage;
     private Drawable drawable;
+    private int change=0;
 
 
     private String[] animals ={"Katze","Hund","Schwein","Schaf"};
-    private String modelFile="animalsounds.lite";
+    private String modelFile="tiergeräusche_3_seks_claudia.lite";
     private int startInd=0;
 
 
@@ -151,6 +152,7 @@ public class AnimalSoundScreen implements Runnable {
             time = curTime;
             if (dTime > 1000f) {
                 synchronized (this) {
+                    change++;
                     dTime = 0;
                     secsLeft--;
                     activity.runOnUiThread(new Runnable() {
@@ -164,21 +166,24 @@ public class AnimalSoundScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(progressBar.getProgress()>=3) {
-                                    activity.setContentView(R.layout.won_screen);
-                                } else {
-                                    activity.setContentView(R.layout.gameover_screen);
-
-                                }
+                                activity.setContentView(R.layout.activity_main);
                             }
                         });
                         break;
                     }
                     stopRecording();
+                    if(change>5) {
+                        change=0;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvWantedAn.setText(animals[r.nextInt(4)]);
+                            }
+                        });
+                    }
                 }
             }
         }
-
     }
 
 }
