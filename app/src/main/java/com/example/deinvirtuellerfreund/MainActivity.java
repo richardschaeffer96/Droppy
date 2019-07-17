@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     public static Integer points = 0;
     public static Integer jokeProgress = 100;
 
-    //BODY OF DROPPY
+    /*BODY OF DROPPY*/
     ImageView droppy;
     ImageView eyebrows;
     ImageView eyes;
@@ -191,28 +191,28 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         DownY = event.getY();//float DownY
                         moveX = 0;
                         moveY = 0;
-                        currentMS = System.currentTimeMillis();//long currentMS     获取系统时间
+                        currentMS = System.currentTimeMillis();//long currentMS  get time by start
                         break;
                     case MotionEvent.ACTION_MOVE:
                         droppie.changeEmotion(Emotion.Satisfied);
-                        moveX += Math.abs(event.getX() - DownX);//X轴距离
-                        moveY += Math.abs(event.getY() - DownY);//y轴距离
+                        moveX += Math.abs(event.getX() - DownX);//distance to X-Axis
+                        moveY += Math.abs(event.getY() - DownY);//distance to Y-Axis
                         DownX = event.getX();
                         DownY = event.getY();
                         break;
                     case MotionEvent.ACTION_UP:
-                        long moveTime = System.currentTimeMillis() - currentMS;//移动时间
-                        //判断是否继续传递信号
+                        long moveTime = System.currentTimeMillis() - currentMS;//duration move
+                        //check move or click?
                         if(moveTime>200&&(moveX>20||moveY>20)){
                             droppie.changeEmotion(Emotion.Happiness);
                             changeLevel(1);
-                            return true; //不再执行后面的事件，在这句前可写要执行的触摸相关代码。点击事件是发生在触摸弹起后
+                            return true; //continue
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
                             }
                         break;
                 }
-                return true;//继续执行后面的代码
+                return true;//continue
             }
         });
 
@@ -263,16 +263,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
 
-
-        //if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-        //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        //} else {
-
         createCameraSource();
-        //}
 
-        //taskLoadUp(city);
         talk.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -333,10 +325,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
             System.out.println("IN DER FILE STEHT: " + fileContent);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -353,10 +343,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
             fileContent = EncodingUtils.getString(buffer, "UTF-8");
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return fileContent;
@@ -449,7 +437,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
 
-
+/*
+infotext
+ */
     public void info(View v){
         simple_header.setText(getResources().getString(R.string.info_headline));
         simple_text.setText(getResources().getString(R.string.info_content));
