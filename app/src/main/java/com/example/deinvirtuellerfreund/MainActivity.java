@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         w_poken=new ArrayList<>();
         Collections.addAll(w_poken,"hm1.wav","hm2.wav","hm3.wav","nein.wav","nein2.wav");
         w_streicheln=new ArrayList<>();
-        Collections.addAll(w_streicheln,"haha1.wav","haha2.wav","haha3.wav","juhu.wav");
+        Collections.addAll(w_streicheln,"haha1.wav","haha2.wav","haha3.wav","danke.wav");
         w_question=new ArrayList<>();
         Collections.addAll(w_question,"tellquestion1.wav","tellquestion2.wav","tellquestion3.wav");
     }
