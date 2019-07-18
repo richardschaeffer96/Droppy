@@ -93,6 +93,7 @@ public class FoodScreen {
     private void won() {
         ((MainActivity) activity).changeLevel(10);
         activity.setContentView(R.layout.won_screen);
+        ((MainActivity)activity).saySentence(((MainActivity)activity).w_gewonnen,null);
     }
 
     private void showApple() {
@@ -114,8 +115,10 @@ public class FoodScreen {
             droppie.changeEmotion(Emotion.Sadness);
             activity.setContentView(R.layout.minigame_cheer);
             new CheerFoodScreen(activity, points);
+            ((MainActivity)activity).saySentence(((MainActivity)activity).w_poken,null);
         } else {
             points++;
+            ((MainActivity)activity).saySentence(((MainActivity)activity).w_streicheln,null);
             if (points == 6) {
                 won();
                 return;

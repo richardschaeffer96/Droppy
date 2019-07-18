@@ -87,6 +87,8 @@ public class AnimalSoundScreen implements Runnable {
             System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
             int cur=Integer.parseInt(tv_progress.getText().toString())+1;
             tv_progress.setText(""+cur);
+            ((MainActivity)activity).saySentence(((MainActivity)activity).w_juhu,null);
+
             int rand = r.nextInt(4);
             tvWantedAn.setText(animals[rand]);
 
@@ -168,8 +170,10 @@ public class AnimalSoundScreen implements Runnable {
                                 if(Integer.parseInt(tv_progress.getText().toString())>=3) {
                                     activity.setContentView(R.layout.won_screen);
                                     ((MainActivity)activity).changeLevel(10);
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gewonnen,null);
                                 } else {
                                     activity.setContentView(R.layout.gameover_screen);
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gameover,null);
                                 }
                             }
                         });

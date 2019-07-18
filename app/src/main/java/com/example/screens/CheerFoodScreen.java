@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.deinvirtuellerfreund.Droppie;
 import com.example.deinvirtuellerfreund.Emotion;
+import com.example.deinvirtuellerfreund.MainActivity;
 import com.example.deinvirtuellerfreund.R;
 import com.example.voice.Preprocessor;
 import com.example.voice.RecordHelper;
@@ -27,8 +28,8 @@ public class CheerFoodScreen implements Runnable {
     private Droppie droppie;
     private boolean won = false;
 
-    private String[] emotions = {"lachen", "stille", "reden", "klopfen", "gähnen", "husten"};
-    private String modelFile = "lachen_stille_reden.lite";
+    private String[]emotions={"lachen","stille","reden","husten","gähnen"};
+    private String modelFile="lachen_stille_reden_alle.lite";
 
     public CheerFoodScreen(Activity activity, int points) {
         this.activity = activity;
@@ -144,11 +145,13 @@ public class CheerFoodScreen implements Runnable {
                                 activity.setContentView(R.layout.food_game);
                                 if (won) {
                                     new FoodScreen(activity, points + 2);
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gewonnen,null);
                                 } else {
                                     if (points < 0) {
                                         points = 0;
                                     }
                                     new FoodScreen(activity, points);
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gameover,null);
                                 }
                             }
                         });

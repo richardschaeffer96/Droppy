@@ -41,8 +41,8 @@ public class CheerScreen implements Runnable {
     private Droppie droppie;
 
     private String[]startCondition={"wütend","traurig"};
-    private String[]emotions={"lachen","stille","reden","klopfen","gähnen","husten"};
-    private String modelFile="lachen_stille_reden.lite";
+    private String[]emotions={"lachen","stille","reden","husten","gähnen"};
+    private String modelFile="lachen_stille_reden_alle.lite";
     private int startInd=0;
 
 
@@ -93,6 +93,7 @@ public class CheerScreen implements Runnable {
                 droppie.changeEmotion(Emotion.Neutral);
             } else if(cur==3) {
                 droppie.changeEmotion(Emotion.Happiness);
+                ((MainActivity)activity).saySentence(((MainActivity)activity).w_streicheln,null);
             }
             progressBar.setProgress(cur + 1);
         }
@@ -163,9 +164,10 @@ public class CheerScreen implements Runnable {
                                 if(progressBar.getProgress()>=5) {
                                     activity.setContentView(R.layout.won_screen);
                                     ((MainActivity)activity).changeLevel(5);
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gewonnen,null);
                                 } else {
                                     activity.setContentView(R.layout.gameover_screen);
-
+                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gameover,null);
                                 }
                             }
                         });

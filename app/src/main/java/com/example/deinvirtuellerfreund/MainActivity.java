@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     public ArrayList<String> w_negativ;
     public ArrayList<String> w_positiv;
     public ArrayList<String> w_question;
+    public ArrayList<String> w_juhu;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -334,6 +335,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         Collections.addAll(w_streicheln,"haha1.wav","haha2.wav","haha3.wav","danke.wav");
         w_question=new ArrayList<>();
         Collections.addAll(w_question,"tellquestion1.wav","tellquestion2.wav","tellquestion3.wav");
+        w_juhu=new ArrayList<>();
+        Collections.addAll(w_juhu,"juhu.wav");
     }
 
     /**
