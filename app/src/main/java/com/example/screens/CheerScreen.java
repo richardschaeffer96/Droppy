@@ -34,7 +34,7 @@ public class CheerScreen implements Runnable {
     private static TextView tvSecs;
     private double time;
     private double dTime;
-    private int secsLeft=15;
+    private int secsLeft=20;
     private Thread clockThread = null;
     private RecordHelper recordHelper;
     private Random r=new Random();
@@ -89,9 +89,9 @@ public class CheerScreen implements Runnable {
         }
         if(success==true) {
             int cur=progressBar.getProgress()+1;
-            if(cur==2) {
+            if(cur==3) {
                 droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==3) {
+            } else if(cur==5) {
                 droppie.changeEmotion(Emotion.Happiness);
                 ((MainActivity)activity).saySentence(((MainActivity)activity).w_streicheln,null);
             }
