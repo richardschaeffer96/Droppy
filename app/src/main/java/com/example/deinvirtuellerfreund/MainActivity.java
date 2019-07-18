@@ -470,9 +470,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // TODO STOP ANIM
-            droppie.changeEmotion(curEmotion);
-            mouth.startAnimation(animMouth);
         }
     }
 
