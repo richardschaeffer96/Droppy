@@ -15,11 +15,13 @@ import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -160,11 +162,13 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initWavLists();
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
+        System.out.println(Build.VERSION.SDK_INT);
+        if(Build.VERSION.SDK_INT>22) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
 
+            }
         }
-
         level_header = findViewById(R.id.level_header);
 
         level_bar = findViewById(R.id.level_bar);
@@ -276,8 +280,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
-
-        createCameraSource();
+        if(Build.VERSION.SDK_INT>22) {
+            createCameraSource();
+        }
 
         talk.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -345,87 +350,27 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
      * @param secondSentence CAN BE NULL IF YOU ONLY WANT TO TELL ONE SENTENCE
      */
     public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
-        final Emotion curEmotion=droppie.getCurEmotion();
-        // TODO START ANIM
-        droppie.changeEmotion(Emotion.Talking);
-        mouth.startAnimation(animTalking);
-        Random r1=new Random();
-        String filename=firstSentence.get(r1.nextInt(firstSentence.size()));
-        AssetFileDescriptor afd = null;
-        try {
-            afd = getAssets().openFd(filename);
-            player = new MediaPlayer();
-            player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-            // if there is a second sentence, we wait until media player is finished with first sentence and then tell the second one
-            if(secondSentence!=null) {
-                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        // We wait one second until we tell the second sentence
-                        // TODO STOP ANIM
-                        droppie.changeEmotion(curEmotion);
-                        mouth.startAnimation(animMouth);
-                        synchronized (this) {
-                            try {
-                                this.wait(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        synchronized (this) {
-                            this.notifyAll();
-                        }
-                        // TODO START ANIM
-                        droppie.changeEmotion(Emotion.Talking);
-                        mouth.startAnimation(animTalking);
-                        Random r2=new Random();
-                        String filename=secondSentence.get(r2.nextInt(secondSentence.size()));
-                        AssetFileDescriptor afd = null;
-                        try {
-                            afd = getAssets().openFd(filename);
-                            player=new MediaPlayer();
-                            player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-                            // IN CASE we asked for a joke, we still have to tell one:
-                            if(secondSentence.equals(w_joke_question)) {
-                                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                    @Override
-                                    public void onCompletion(MediaPlayer mediaPlayer) {
-                                        // We wait one second until we tell a joke
-                                        // TODO STOP ANIM
-                                        droppie.changeEmotion(curEmotion);
-                                        mouth.startAnimation(animMouth);
-                                        synchronized (this) {
-                                            try {
-                                                this.wait(1000);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                        synchronized (this) {
-                                            this.notifyAll();
-                                        }
-                                        //
-                                        tellJoke(null);
-                                    }
-                                });
-                            }
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            } else {
-                // IN CASE we asked for a joke, we still have to tell one:
-                if(firstSentence.equals(w_joke_question)) {
-                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        // TODO STOP ANIM
-                        droppie.changeEmotion(curEmotion);
-                        mouth.startAnimation(animMouth);
-                            // We wait one second until we tell a joke
+        synchronized (this) {
+            final Emotion curEmotion = droppie.getCurEmotion();
+            // TODO START ANIM
+            droppie.changeEmotion(Emotion.Talking);
+            mouth.startAnimation(animTalking);
+            Random r1 = new Random();
+            String filename = firstSentence.get(r1.nextInt(firstSentence.size()));
+            AssetFileDescriptor afd = null;
+            try {
+                afd = getAssets().openFd(filename);
+                player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                // if there is a second sentence, we wait until media player is finished with first sentence and then tell the second one
+                if (secondSentence != null) {
+                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            // We wait one second until we tell the second sentence
+                            // TODO STOP ANIM
+                            droppie.changeEmotion(curEmotion);
+                            mouth.startAnimation(animMouth);
                             synchronized (this) {
                                 try {
                                     this.wait(1000);
@@ -436,20 +381,99 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                             synchronized (this) {
                                 this.notifyAll();
                             }
-                            tellJoke(null);
+                            // TODO START ANIM
+                            droppie.changeEmotion(Emotion.Talking);
+                            mouth.startAnimation(animTalking);
+                            Random r2 = new Random();
+                            String filename = secondSentence.get(r2.nextInt(secondSentence.size()));
+                            AssetFileDescriptor afd = null;
+                            try {
+                                afd = getAssets().openFd(filename);
+                                player = new MediaPlayer();
+                                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                                // IN CASE we asked for a joke, we still have to tell one:
+                                if (secondSentence.equals(w_joke_question)) {
+                                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                        @Override
+                                        public void onCompletion(MediaPlayer mediaPlayer) {
+                                            // We wait one second until we tell a joke
+                                            // TODO STOP ANIM
+                                            droppie.changeEmotion(curEmotion);
+                                            mouth.startAnimation(animMouth);
+                                            synchronized (this) {
+                                                try {
+                                                    this.wait(1000);
+                                                } catch (InterruptedException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            synchronized (this) {
+                                                this.notifyAll();
+                                            }
+                                            //
+                                            tellJoke(null);
+                                        }
+                                    });
+                                } else {
+                                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                        @Override
+                                        public void onCompletion(MediaPlayer mediaPlayer) {
+                                            droppie.changeEmotion(curEmotion);
+                                            mouth.startAnimation(animMouth);
+                                        }
+                                    });
+                                }
+                                player.prepare();
+                                player.start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
-                }
-            }
+                } else {
+                    // IN CASE we asked for a joke, we still have to tell one:
+                    if (firstSentence.equals(w_joke_question)) {
+                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mediaPlayer) {
+                                // TODO STOP ANIM
+                                droppie.changeEmotion(curEmotion);
+                                mouth.startAnimation(animMouth);
+                                // We wait one second until we tell a joke
+                                synchronized (this) {
+                                    try {
+                                        this.wait(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                synchronized (this) {
+                                    this.notifyAll();
+                                }
+                                tellJoke(null);
+                            }
+                        });
+                    } else {
+                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-            player.prepare();
-            player.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+                            @Override
+                            public void onCompletion(MediaPlayer mediaPlayer) {
+                                droppie.changeEmotion(curEmotion);
+                                mouth.startAnimation(animMouth);
+                            }
+                        });
+                    }
+                }
+
+                player.prepare();
+                player.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // TODO STOP ANIM
+            droppie.changeEmotion(curEmotion);
+            mouth.startAnimation(animMouth);
         }
-        // TODO STOP ANIM
-        droppie.changeEmotion(curEmotion);
-        mouth.startAnimation(animMouth);
     }
 
 
@@ -483,8 +507,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return Integer.parseInt(fileContent);
+        if(TextUtils.isDigitsOnly(fileContent)==true) {
+            return Integer.parseInt(fileContent);
+        } else {
+            return 10;
+        }
     }
     public String levelnumberauslesen(String filename){
         String fileContent="";
@@ -505,13 +532,15 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
-            createCameraSource();
+        if(Build.VERSION.SDK_INT>22) {
+            if (requestCode == REQUEST_CAMERA_PERMISSION && resultCode == RESULT_OK) {
+                createCameraSource();
+            }
         }
     }
 
     private void createCameraSource() {
-
+        if(Build.VERSION.SDK_INT>22) {
             Context context = getApplicationContext();
             FaceDetector detector = new FaceDetector.Builder(context)
                     .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
@@ -528,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     .build();
 
             //camera sound off
-            AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+            AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
 
         /*camera sound on
@@ -536,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 	    mgr.setStreamMute(AudioManager.STREAM_SYSTEM, false);
          */
 
-
+        }
 
     }
 
@@ -546,8 +575,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     @Override
     protected void onResume() {
         super.onResume();
-
-        startCameraSource();
+        if(Build.VERSION.SDK_INT>22) {
+            startCameraSource();
+        }
     }
 
     /**
@@ -556,7 +586,9 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     @Override
     protected void onPause() {
         super.onPause();
-        mPreview.stop();
+        if(Build.VERSION.SDK_INT>22) {
+            mPreview.stop();
+        }
     }
 
     /**
@@ -572,20 +604,22 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     }
 
     private void startCameraSource() {
-        // check that the device has play services available.
-        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
-        if (code != ConnectionResult.SUCCESS) {
-            Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
-            dlg.show();
-        }
+        if(Build.VERSION.SDK_INT>22) {
+            // check that the device has play services available.
+            int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
+            if (code != ConnectionResult.SUCCESS) {
+                Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
+                dlg.show();
+            }
 
-        if (mCameraSource != null) {
-            try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
-            } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
-                mCameraSource.release();
-                mCameraSource = null;
+            if (mCameraSource != null) {
+                try {
+                    mPreview.start(mCameraSource, mGraphicOverlay);
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to start camera source.", e);
+                    mCameraSource.release();
+                    mCameraSource = null;
+                }
             }
         }
     }
@@ -643,13 +677,17 @@ infotext
     //public void talk(View v){ }
 
     public void play(View v){
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted, initiate request
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_INTERNET);
-        }else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if(Build.VERSION.SDK_INT>22) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                // permission not granted, initiate request
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_INTERNET);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 // permission not granted, initiate request
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_RECORD_AUDIO);
-        }else{
+            } else {
+                minigames_overlay.show();
+            }
+        } else {
             minigames_overlay.show();
         }
     }
@@ -1034,11 +1072,13 @@ infotext
 
 
     public void taskLoadUp(String query) {
-        if (Function.isNetworkAvailable(getApplicationContext())) {
-            DownloadWeather task = new DownloadWeather();
-            task.execute(query);
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        if(Build.VERSION.SDK_INT>22) {
+            if (Function.isNetworkAvailable(getApplicationContext())) {
+                DownloadWeather task = new DownloadWeather();
+                task.execute(query);
+            } else {
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
