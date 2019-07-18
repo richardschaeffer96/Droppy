@@ -61,6 +61,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -142,12 +143,22 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     private static final int REQUEST_ACCESS_NETWORK_STATE = 1;
     static Camera camera = null;
 
+    public ArrayList<String> w_hello;
+    public ArrayList<String> w_streicheln;
+    public ArrayList<String> w_poken;
+    public ArrayList<String> w_joke_question;
+    public ArrayList<String> w_gameover;
+    public ArrayList<String> w_gewonnen;
+    public ArrayList<String> w_negativ;
+    public ArrayList<String> w_positiv;
+    public ArrayList<String> w_question;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initWavLists();
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
 
@@ -206,9 +217,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         if(moveTime>200&&(moveX>20||moveY>20)){
                             droppie.changeEmotion(Emotion.Happiness);
                             changeLevel(1);
+                            saySentence(w_streicheln,null);
                             return true; //continue
                         } else {
                             droppie.changeEmotion(Emotion.Poked);
+                            saySentence(w_poken,null);
                             }
                         break;
                 }
@@ -297,8 +310,84 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
             }
         });
+
+        saySentence(w_hello,w_question);
     }
 
+
+    private void initWavLists() {
+        w_gameover=new ArrayList<>();
+        Collections.addAll(w_gameover,"gameover.wav");
+        w_gewonnen=new ArrayList<>();
+        Collections.addAll(w_gewonnen,"gewonnen.wav","juhu.wav");
+        w_hello=new ArrayList<>();
+        Collections.addAll(w_hello,"hallo.wav");
+        w_joke_question=new ArrayList<>();
+        Collections.addAll(w_joke_question,"jokequestion1.wav","jokequestion2.wav","jokequestion3.wav","jokeqestion3.wav","jokequestion4.wav");
+        w_negativ=new ArrayList<>();
+        Collections.addAll(w_negativ,"negativ1.wav","negativ2.wav","negativ3.wav","negativ5.wav","negativ6.wav");
+        w_positiv=new ArrayList<>();
+        Collections.addAll(w_positiv,"positiv1.wav","positiv2.wav","positiv3.wav","positiv4.wav");
+        w_poken=new ArrayList<>();
+        Collections.addAll(w_poken,"hm1.wav","hm2.wav","hm3.wav","nein.wav","nein2.wav");
+        w_streicheln=new ArrayList<>();
+        Collections.addAll(w_streicheln,"haha1.wav","haha2.wav","haha3.wav","juhu.wav");
+        w_question=new ArrayList<>();
+        Collections.addAll(w_question,"tellquestion1.wav","tellquestion2.wav","tellquestion3.wav");
+    }
+
+    /**
+     * Here we can enter one or two arraylists (activity.w_) and droppy tells one random sentence out of these lists.
+     * @param firstSentence
+     * @param secondSentence CAN BE NULL IF YOU ONLY WANT TO TELL ONE SENTENCE
+     */
+    public void saySentence(ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
+        Random r1=new Random();
+        String filename=firstSentence.get(r1.nextInt(firstSentence.size()));
+        AssetFileDescriptor afd = null;
+        try {
+            afd = getAssets().openFd(filename);
+            player = new MediaPlayer();
+            player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+            // if there is a second sentence, we wait until media player is finished with first sentence and then tell the second one
+            if(secondSentence!=null) {
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        // We wait one second until we tell the second sentence
+                        synchronized (this) {
+                            try {
+                                this.wait(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        synchronized (this) {
+                            this.notifyAll();
+                        }
+                        Random r2=new Random();
+                        String filename=secondSentence.get(r2.nextInt(secondSentence.size()));
+                        AssetFileDescriptor afd = null;
+                        try {
+                            afd = getAssets().openFd(filename);
+                            player=new MediaPlayer();
+                            player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+                            player.prepare();
+                            player.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+            }
+
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean fileIsExists(String filename) {
         try {
