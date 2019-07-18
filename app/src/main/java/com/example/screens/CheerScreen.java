@@ -50,7 +50,7 @@ public class CheerScreen implements Runnable {
     // Initialisiere, ob Droppie zu Beginn WÜTEND oder TRAURIG ist
     private void initStartCondition() {
         progressBar=activity.findViewById(R.id.emotion_bar);
-        progressBar.setMax(10);
+        progressBar.setMax(5);
         progressBar.setProgress(1);
         droppie=new Droppie(activity);
         startInd=r.nextInt(2);
@@ -64,7 +64,6 @@ public class CheerScreen implements Runnable {
     // Nimmt einen beim Sprechen auf
     private void startRecording() {
         if(recordHelper.getRecording()==false){
-            System.out.println("START RECORDING");
             recordHelper.startRecording();
         }
     }
@@ -74,7 +73,6 @@ public class CheerScreen implements Runnable {
     // Je nach Startsetting (wütend oder traurig) erhält man für REDEN oder LACHEN Punkte
     private void evaluateEmotion(int ind) {
         String em=emotions[ind];
-        System.out.println(em);
         boolean success=false;
         if(startInd==0) {
             // WÜTEND: BEKOMMT PUNKT FÜR REDEN
@@ -95,14 +93,13 @@ public class CheerScreen implements Runnable {
                 droppie.changeEmotion(Emotion.Happiness);
                 ((MainActivity)activity).saySentence(((MainActivity)activity).w_streicheln,null);
             }
-            progressBar.setProgress(cur + 1);
+            progressBar.setProgress(cur);
         }
     }
 
     // Beende Aufnahme, starte Aufbereitung der Daten und Beginne Auswertung
     private void stopRecording() {
         if(recordHelper.getRecording()==true) {
-            System.out.println("STOP RECORDING");
             recordHelper.stopRecording();
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -142,38 +139,40 @@ public class CheerScreen implements Runnable {
     public void run() {
         Thread myThread = Thread.currentThread();
         while (clockThread == myThread) {
-            startRecording();
-            double curTime = System.currentTimeMillis();
-            dTime += curTime - time;
-            time = curTime;
-            if (dTime > 1000f) {
-                synchronized (this) {
-                    dTime = 0;
-                    secsLeft--;
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvSecs.setText(""+secsLeft);
-                        }
-                    });
-                    if (secsLeft <= 0) {
-                        stopRecording();
+            synchronized (this) {
+                startRecording();
+                double curTime = System.currentTimeMillis();
+                dTime += curTime - time;
+                time = curTime;
+                if (dTime > 1000f) {
+                    synchronized (this) {
+                        dTime = 0;
+                        secsLeft--;
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(progressBar.getProgress()>=5) {
-                                    activity.setContentView(R.layout.won_screen);
-                                    ((MainActivity)activity).changeLevel(5);
-                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gewonnen,null);
-                                } else {
-                                    activity.setContentView(R.layout.gameover_screen);
-                                    ((MainActivity)activity).saySentence(((MainActivity)activity).w_gameover,null);
-                                }
+                                tvSecs.setText("" + secsLeft);
                             }
                         });
-                        break;
+                        if (secsLeft <= 0) {
+                            stopRecording();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (progressBar.getProgress() >= 5) {
+                                        activity.setContentView(R.layout.won_screen);
+                                        ((MainActivity) activity).changeLevel(5);
+                                        ((MainActivity) activity).saySentence(((MainActivity) activity).w_gewonnen, null);
+                                    } else {
+                                        activity.setContentView(R.layout.gameover_screen);
+                                        ((MainActivity) activity).saySentence(((MainActivity) activity).w_gameover, null);
+                                    }
+                                }
+                            });
+                            break;
+                        }
+                        stopRecording();
                     }
-                    stopRecording();
                 }
             }
         }

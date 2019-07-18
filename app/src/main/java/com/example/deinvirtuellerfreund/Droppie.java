@@ -23,6 +23,9 @@ public class Droppie {
         ImageView eyebrows = activity.findViewById(R.id.droppy_eyebrows);
         ImageView eyes = activity.findViewById(R.id.droppy_eyes);
         ImageView mouth = activity.findViewById(R.id.droppy_mouth);
+        if(eyebrows==null ||eyes==null || mouth==null) {
+            return;
+        }
         curEmotion=emotion;
         switch (emotion) {
             case Anger:

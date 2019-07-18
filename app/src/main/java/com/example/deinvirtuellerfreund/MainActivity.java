@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
     private RecordHelper recordHelper;
     public static Activity activity;
-
+    public static boolean greeting=false;
     private CameraPreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private CameraSource mCameraSource = null;
@@ -316,8 +316,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
 
             }
         });
-
-        saySentence(w_hello,w_question);
+        if(greeting==false) {
+            greeting=true;
+            saySentence(w_hello, w_question);
+        }
     }
 
 
