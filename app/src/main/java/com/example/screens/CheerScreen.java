@@ -88,10 +88,11 @@ public class CheerScreen implements Runnable {
         if(success==true) {
             int cur=progressBar.getProgress()+1;
             if(cur==3) {
-                droppie.changeEmotion(Emotion.Neutral);
-            } else if(cur==5) {
                 droppie.changeEmotion(Emotion.Happiness);
                 ((MainActivity)activity).saySentence(((MainActivity)activity).w_streicheln,null);
+            } else if(cur==5) {
+                secsLeft=0;
+
             }
             progressBar.setProgress(cur);
         }
@@ -151,7 +152,7 @@ public class CheerScreen implements Runnable {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvSecs.setText("" + secsLeft);
+                                tvSecs.setText("" + Math.max(secsLeft,0));
                             }
                         });
                         if (secsLeft <= 0) {

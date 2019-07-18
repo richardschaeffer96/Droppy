@@ -21,7 +21,6 @@ public class AnimalSoundScreen implements Runnable {
         this.activity = activity;
         activity.setContentView(R.layout.minigame_animals);
         tvCurAn=activity.findViewById(R.id.cur_animal);
-        tvWantedAn=activity.findViewById(R.id.wanted_animal);
         wantedAnImage=activity.findViewById(R.id.wanted_animal_pic);
         tvSecs = activity.findViewById(R.id.seconds_left_animals);
         tvSecs.setText(""+secsLeft);
@@ -41,10 +40,10 @@ public class AnimalSoundScreen implements Runnable {
     private RecordHelper recordHelper;
     private Random r=new Random();
     private TextView tvCurAn;
-    private TextView tvWantedAn;
     private ImageView wantedAnImage;
     private Drawable drawable;
     private int change=0;
+    private String wanted="";
 
 
     private String[] animals ={"Katze","Hund","Schwein","Schaf", "Neutral", "Stille"};
@@ -58,7 +57,7 @@ public class AnimalSoundScreen implements Runnable {
         tv_progress=activity.findViewById(R.id.number_animals);
         tv_progress.setText(""+0);
         int ind=r.nextInt(animals.length);
-        tvWantedAn.setText(animals[ind]);
+        wanted=animals[ind];
         if(animals[ind]=="Katze"){
             wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
         }else if(animals[ind]=="Hund"){
@@ -82,15 +81,15 @@ public class AnimalSoundScreen implements Runnable {
     // Je nach Startsetting (wütend oder traurig) erhält man für REDEN oder LACHEN Punkte
     private void evaluateEmotion(int ind) {
         String an= animals[ind];
-        tvCurAn.setText(an);
-        if(tvWantedAn.getText().equals(tvCurAn.getText())) {
-            System.out.println(tvWantedAn.getText()+"=="+tvCurAn.getText());
+
+        if(an.equals(wanted)) {
+            tvCurAn.setText("Richtig!");
             int cur=Integer.parseInt(tv_progress.getText().toString())+1;
             tv_progress.setText(""+cur);
             ((MainActivity)activity).saySentence(((MainActivity)activity).w_juhu,null);
 
             int rand = r.nextInt(4);
-            tvWantedAn.setText(animals[rand]);
+            wanted=animals[rand];
 
             if(animals[rand]=="Katze"){
                 wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
@@ -101,13 +100,14 @@ public class AnimalSoundScreen implements Runnable {
             }else{
                 wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.sheep));
             }
+        } else {
+            tvCurAn.setText("");
         }
     }
 
     // Beende Aufnahme, starte Aufbereitung der Daten und Beginne Auswertung
     private void stopRecording() {
         if(recordHelper.getRecording()==true) {
-            System.out.println("STOP RECORDING");
             recordHelper.stopRecording();
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -186,6 +186,7 @@ public class AnimalSoundScreen implements Runnable {
                             @Override
                             public void run() {
                                 int ind=r.nextInt(4);
+                                wanted=animals[ind];
                                 if(animals[ind]=="Katze"){
                                     wantedAnImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.cat));
                                 }else if(animals[ind]=="Hund"){
