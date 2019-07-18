@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                             player=new MediaPlayer();
                             player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
                             // IN CASE we asked for a joke, we still have to tell one:
-                            if(firstSentence.equals(w_joke_question)) {
+                            if(secondSentence.equals(w_joke_question)) {
                                 player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
