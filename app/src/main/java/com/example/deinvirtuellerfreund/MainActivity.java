@@ -345,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
      * @param secondSentence CAN BE NULL IF YOU ONLY WANT TO TELL ONE SENTENCE
      */
     public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
+        final Emotion curEmotion=droppie.getCurEmotion();
         // TODO START ANIM
         droppie.changeEmotion(Emotion.Talking);
         mouth.startAnimation(animTalking);
@@ -362,13 +363,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         // We wait one second until we tell the second sentence
                         // TODO STOP ANIM
-                        droppie.changeEmotion(Emotion.Happiness);
+                        droppie.changeEmotion(curEmotion);
                         mouth.startAnimation(animMouth);
                         synchronized (this) {
                             try {
                                 this.wait(1000);
-                                droppie.changeEmotion(Emotion.Happiness);
-                                mouth.startAnimation(animMouth);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -393,13 +392,11 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         // We wait one second until we tell a joke
                                         // TODO STOP ANIM
-                                        droppie.changeEmotion(Emotion.Happiness);
+                                        droppie.changeEmotion(curEmotion);
                                         mouth.startAnimation(animMouth);
                                         synchronized (this) {
                                             try {
                                                 this.wait(1000);
-                                                droppie.changeEmotion(Emotion.Happiness);
-                                                mouth.startAnimation(animMouth);
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
@@ -419,8 +416,6 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         }
                     }
                 });
-                droppie.changeEmotion(Emotion.Happiness);
-                mouth.startAnimation(animMouth);
             } else {
                 // IN CASE we asked for a joke, we still have to tell one:
                 if(firstSentence.equals(w_joke_question)) {
@@ -428,14 +423,12 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         // TODO STOP ANIM
-                        droppie.changeEmotion(Emotion.Happiness);
+                        droppie.changeEmotion(curEmotion);
                         mouth.startAnimation(animMouth);
                             // We wait one second until we tell a joke
                             synchronized (this) {
                                 try {
                                     this.wait(1000);
-                                    droppie.changeEmotion(Emotion.Happiness);
-                                    mouth.startAnimation(animMouth);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -455,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
             e.printStackTrace();
         }
         // TODO STOP ANIM
-        droppie.changeEmotion(Emotion.Happiness);
+        droppie.changeEmotion(curEmotion);
         mouth.startAnimation(animMouth);
     }
 

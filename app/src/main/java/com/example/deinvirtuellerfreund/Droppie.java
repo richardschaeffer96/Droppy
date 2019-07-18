@@ -12,12 +12,18 @@ public class Droppie {
     }
 
     private Activity activity;
+    private Emotion curEmotion=Emotion.Neutral;
+
+    public Emotion getCurEmotion() {
+        return curEmotion;
+    }
 
     public void changeEmotion(Emotion emotion){
         //ImageView dropsi=activity.findViewById(R.id.droppy_base);
         ImageView eyebrows = activity.findViewById(R.id.droppy_eyebrows);
         ImageView eyes = activity.findViewById(R.id.droppy_eyes);
         ImageView mouth = activity.findViewById(R.id.droppy_mouth);
+        curEmotion=emotion;
         switch (emotion) {
             case Anger:
                 eyebrows.setImageDrawable(activity.getResources().getDrawable(R.drawable.droppy_angry_eyebrows));
