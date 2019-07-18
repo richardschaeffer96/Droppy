@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
      */
     public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
         synchronized (this) {
-            final Emotion curEmotion = droppie.getCurEmotion();
+            final Emotion curEmotion = Emotion.Neutral;
             // TODO START ANIM
             droppie.changeEmotion(Emotion.Talking);
             mouth.startAnimation(animTalking);
