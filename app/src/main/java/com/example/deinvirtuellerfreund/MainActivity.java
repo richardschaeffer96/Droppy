@@ -344,7 +344,8 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
      * @param firstSentence
      * @param secondSentence CAN BE NULL IF YOU ONLY WANT TO TELL ONE SENTENCE
      */
-    public void saySentence(ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
+    public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
+        // TODO START ANIM
         Random r1=new Random();
         String filename=firstSentence.get(r1.nextInt(firstSentence.size()));
         AssetFileDescriptor afd = null;
@@ -358,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         // We wait one second until we tell the second sentence
+                        // TODO STOP ANIM
                         synchronized (this) {
                             try {
                                 this.wait(1000);
@@ -368,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         synchronized (this) {
                             this.notifyAll();
                         }
+                        // TODO START ANIM
                         Random r2=new Random();
                         String filename=secondSentence.get(r2.nextInt(secondSentence.size()));
                         AssetFileDescriptor afd = null;
@@ -375,14 +378,58 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                             afd = getAssets().openFd(filename);
                             player=new MediaPlayer();
                             player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+                            // IN CASE we asked for a joke, we still have to tell one:
+                            if(firstSentence.equals(w_joke_question)) {
+                                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mediaPlayer) {
+                                        // We wait one second until we tell a joke
+                                        // TODO STOP ANIM
+                                        synchronized (this) {
+                                            try {
+                                                this.wait(1000);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        synchronized (this) {
+                                            this.notifyAll();
+                                        }
+                                        // TODO START ANIM (wenn in tellJoke Methode nicht ohnehin schon gemacht!)
+                                        tellJoke(null);
+                                    }
+                                });
+                            }
                             player.prepare();
                             player.start();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
+            } else {
+                // IN CASE we asked for a joke, we still have to tell one:
+                if(firstSentence.equals(w_joke_question)) {
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        // TODO STOP ANIM
+                            // We wait one second until we tell a joke
+                            synchronized (this) {
+                                try {
+                                    this.wait(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            synchronized (this) {
+                                this.notifyAll();
+                            }
+                        // TODO START ANIM (wenn in telljoke Methode nicht ohnehin schon gemacht)
+                            tellJoke(null);
+                        }
+                    });
+                }
             }
 
             player.prepare();
@@ -390,7 +437,10 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // TODO STOP ANIM
     }
+
+
 
     public boolean fileIsExists(String filename) {
         try {
@@ -818,7 +868,7 @@ infotext
 
         player.start();
 
-        }
+    }
 
     public void jokeChallenge() {
 

@@ -46,15 +46,19 @@ public class HowWasYourDayThread implements Runnable {
                     switch (emotion) {
                         case Happiness:
                             droppie.changeEmotion(Emotion.Happiness);
+                            ((MainActivity)activity).saySentence(((MainActivity)activity).w_positiv,null);
                             break;
                         case Sadness:
                             droppie.changeEmotion(Emotion.Sadness);
+                            ((MainActivity)activity).saySentence(((MainActivity)activity).w_negativ,((MainActivity)activity).w_joke_question);
                             break;
                         case Neutral:
                             droppie.changeEmotion(Emotion.Neutral);
+                            ((MainActivity)activity).saySentence(((MainActivity)activity).w_joke_question,null);
                             break;
                         case Anger:
                             droppie.changeEmotion(Emotion.Anger);
+                            ((MainActivity)activity).saySentence(((MainActivity)activity).w_negativ,null);
                             break;
                     }
                 }
