@@ -13,8 +13,6 @@
         android:allowBackup="true"
         android:icon="@drawable/droppy_lucky"
         android:label="Droppy"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

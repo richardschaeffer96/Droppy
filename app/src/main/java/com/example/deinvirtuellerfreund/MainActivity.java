@@ -352,128 +352,97 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
      * @param secondSentence CAN BE NULL IF YOU ONLY WANT TO TELL ONE SENTENCE
      */
     public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
-        synchronized (this) {
-            final Emotion curEmotion = Emotion.Neutral;
-            // TODO START ANIM
-            droppie.changeEmotion(Emotion.Talking);
-            mouth.startAnimation(animTalking);
-            Random r1 = new Random();
-            String filename = firstSentence.get(r1.nextInt(firstSentence.size()));
-            AssetFileDescriptor afd = null;
-            try {
-                afd = getAssets().openFd(filename);
-                player = new MediaPlayer();
-                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                // if there is a second sentence, we wait until media player is finished with first sentence and then tell the second one
-                if (secondSentence != null) {
+        final Emotion curEmotion = Emotion.Neutral;
+        // TODO START ANIM
+        droppie.changeEmotion(Emotion.Talking);
+        mouth.startAnimation(animTalking);
+        Random r1 = new Random();
+        String filename = firstSentence.get(r1.nextInt(firstSentence.size()));
+        AssetFileDescriptor afd = null;
+        try {
+            afd = getAssets().openFd(filename);
+            player = new MediaPlayer();
+            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            // if there is a second sentence, we wait until media player is finished with first sentence and then tell the second one
+            if (secondSentence != null) {
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        // We wait one second until we tell the second sentence
+                        // TODO STOP ANIM
+                        droppie.changeEmotion(curEmotion);
+                        mouth.startAnimation(animMouth);
+                        // TODO START ANIM
+                        droppie.changeEmotion(Emotion.Talking);
+                        mouth.startAnimation(animTalking);
+                        Random r2 = new Random();
+                        String filename = secondSentence.get(r2.nextInt(secondSentence.size()));
+                        AssetFileDescriptor afd = null;
+                        try {
+                            afd = getAssets().openFd(filename);
+                            player = new MediaPlayer();
+                            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                            // IN CASE we asked for a joke, we still have to tell one:
+                            if (secondSentence.equals(w_joke_question)) {
+                                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mediaPlayer) {
+                                        // We wait one second until we tell a joke
+                                        // TODO STOP ANIM
+                                        droppie.changeEmotion(curEmotion);
+                                        mouth.startAnimation(animMouth);
+                                        //
+                                        tellJoke(null);
+                                    }
+                                });
+                            } else {
+                                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mediaPlayer) {
+                                        droppie.changeEmotion(curEmotion);
+                                        mouth.startAnimation(animMouth);
+                                    }
+                                });
+                            }
+                            player.prepare();
+                            player.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                // IN CASE we asked for a joke, we still have to tell one:
+                if (firstSentence.equals(w_joke_question)) {
                     player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mediaPlayer) {
-                            // We wait one second until we tell the second sentence
                             // TODO STOP ANIM
                             droppie.changeEmotion(curEmotion);
                             mouth.startAnimation(animMouth);
-                            synchronized (this) {
-                                try {
-                                    this.wait(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            synchronized (this) {
-                                this.notifyAll();
-                            }
-                            // TODO START ANIM
-                            droppie.changeEmotion(Emotion.Talking);
-                            mouth.startAnimation(animTalking);
-                            Random r2 = new Random();
-                            String filename = secondSentence.get(r2.nextInt(secondSentence.size()));
-                            AssetFileDescriptor afd = null;
-                            try {
-                                afd = getAssets().openFd(filename);
-                                player = new MediaPlayer();
-                                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                                // IN CASE we asked for a joke, we still have to tell one:
-                                if (secondSentence.equals(w_joke_question)) {
-                                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                        @Override
-                                        public void onCompletion(MediaPlayer mediaPlayer) {
-                                            // We wait one second until we tell a joke
-                                            // TODO STOP ANIM
-                                            droppie.changeEmotion(curEmotion);
-                                            mouth.startAnimation(animMouth);
-                                            synchronized (this) {
-                                                try {
-                                                    this.wait(1000);
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            synchronized (this) {
-                                                this.notifyAll();
-                                            }
-                                            //
-                                            tellJoke(null);
-                                        }
-                                    });
-                                } else {
-                                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                        @Override
-                                        public void onCompletion(MediaPlayer mediaPlayer) {
-                                            droppie.changeEmotion(curEmotion);
-                                            mouth.startAnimation(animMouth);
-                                        }
-                                    });
-                                }
-                                player.prepare();
-                                player.start();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            tellJoke(null);
                         }
                     });
                 } else {
-                    // IN CASE we asked for a joke, we still have to tell one:
-                    if (firstSentence.equals(w_joke_question)) {
-                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            @Override
-                            public void onCompletion(MediaPlayer mediaPlayer) {
-                                // TODO STOP ANIM
-                                droppie.changeEmotion(curEmotion);
-                                mouth.startAnimation(animMouth);
-                                // We wait one second until we tell a joke
-                                synchronized (this) {
-                                    try {
-                                        this.wait(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                synchronized (this) {
-                                    this.notifyAll();
-                                }
-                                tellJoke(null);
-                            }
-                        });
-                    } else {
-                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-                            @Override
-                            public void onCompletion(MediaPlayer mediaPlayer) {
-                                droppie.changeEmotion(curEmotion);
-                                mouth.startAnimation(animMouth);
-                            }
-                        });
-                    }
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            droppie.changeEmotion(curEmotion);
+                            mouth.startAnimation(animMouth);
+                        }
+                    });
                 }
-
-                player.prepare();
-                player.start();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+
 
 
 
