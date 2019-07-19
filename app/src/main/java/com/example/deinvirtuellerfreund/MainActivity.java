@@ -354,8 +354,13 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
     public void saySentence(final ArrayList<String>firstSentence, final ArrayList<String>secondSentence)  {
         final Emotion curEmotion = Emotion.Neutral;
         // TODO START ANIM
-        droppie.changeEmotion(Emotion.Talking);
-        mouth.startAnimation(animTalking);
+        if(firstSentence.equals(w_streicheln)) {
+            droppie.changeEmotion(Emotion.Happiness);
+            mouth.startAnimation(animMouth);
+        } else {
+            droppie.changeEmotion(Emotion.Talking);
+            mouth.startAnimation(animTalking);
+        }
         Random r1 = new Random();
         String filename = firstSentence.get(r1.nextInt(firstSentence.size()));
         AssetFileDescriptor afd = null;
@@ -368,13 +373,14 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                 player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
-                        // We wait one second until we tell the second sentence
-                        // TODO STOP ANIM
-                        droppie.changeEmotion(curEmotion);
-                        mouth.startAnimation(animMouth);
                         // TODO START ANIM
-                        droppie.changeEmotion(Emotion.Talking);
-                        mouth.startAnimation(animTalking);
+                        if(firstSentence.equals(w_streicheln)) {
+                            droppie.changeEmotion(Emotion.Happiness);
+                            mouth.startAnimation(animMouth);
+                        } else {
+                            droppie.changeEmotion(Emotion.Talking);
+                            mouth.startAnimation(animTalking);
+                        }
                         Random r2 = new Random();
                         String filename = secondSentence.get(r2.nextInt(secondSentence.size()));
                         AssetFileDescriptor afd = null;
