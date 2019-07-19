@@ -923,16 +923,8 @@ infotext
                         stopPlayer();
                         mouth.startAnimation(animMouth);
                         droppie.changeEmotion(Emotion.Happiness);
-
-                        synchronized (this) {
-                            try {
-                                this.wait(2000);
-                                jokecount++;
-                                jokeChallenge();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        jokecount++;
+                        jokeChallenge();
                     }
                 });
 

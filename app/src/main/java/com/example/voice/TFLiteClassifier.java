@@ -163,7 +163,7 @@ public class TFLiteClassifier {
         if(Emotion.values()[ind]==Emotion.Happiness) {
 
             if(MainActivity.inMinigame==true){
-                MainActivity.jokeProgress -= 15;
+                MainActivity.jokeProgress -= 30;
                 MainActivity.level_bar.setProgress(MainActivity.jokeProgress);
                 System.out.println("!!!!!! Jokeprogress ist: " + MainActivity.jokeProgress);
 
