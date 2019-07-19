@@ -889,7 +889,7 @@ infotext
     }
 
     public void jokeChallenge() {
-
+        stopPlayer();
         int max_jokes = 4;
 
         if(jokeProgress<=0){
