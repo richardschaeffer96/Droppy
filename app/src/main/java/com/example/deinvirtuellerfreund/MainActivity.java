@@ -210,11 +210,19 @@ public class MainActivity extends AppCompatActivity implements Animation.Animati
                         currentMS = System.currentTimeMillis();//long currentMS  get time by start
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        droppie.changeEmotion(Emotion.Satisfied);
+                        //droppie.changeEmotion(Emotion.Satisfied);
                         moveX += Math.abs(event.getX() - DownX);//distance to X-Axis
                         moveY += Math.abs(event.getY() - DownY);//distance to Y-Axis
                         DownX = event.getX();
                         DownY = event.getY();
+                        long moveTimeOld = System.currentTimeMillis() - currentMS;//duration move
+                        //check move or click?
+                        if(moveTimeOld>100&&(moveX>10||moveY>10)) {
+                            droppie.changeEmotion(Emotion.Satisfied);
+                            //changeLevel(1);
+                            //saySentence(w_streicheln, null);
+                            //return true; //continue
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         long moveTime = System.currentTimeMillis() - currentMS;//duration move
