@@ -131,7 +131,7 @@ public class JokeChallenge implements Runnable{
         if (player != null) {
             player.release();
             player = null;
-            Toast.makeText(activity, "MediaPlayer released", Toast.LENGTH_SHORT).show();
+       //     Toast.makeText(activity, "MediaPlayer released", Toast.LENGTH_SHORT).show();
         }
     }
 
