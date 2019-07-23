@@ -8,7 +8,7 @@
     <string name="won_headline">Du hast Gewonnen!</string>
     <string name="won_content">Du hast das maximale Ergebnis erreicht! Die neuen Punkte werden
     deinem Freundschaftslevel gut geschrieben!</string>
-    <string name="animal_content">In diesem Minispiel wird dir ein Tier angezeigt.\nImitiere das Tier! Wenn du es richtig machst, wird das nächste Tier angezeigt.\nBei 3 Treffern ist das Spiel gewonnen.</string>
+    <string name="animal_content">In diesem Minispiel wird dir ein Tier angezeigt.\nImitiere das Tier! Wenn du es richtig machst, wird das nächste Tier angezeigt.</string>
     <string name="animal_headline">Imitiere Tiere!</string>
     <string name="cheer_headline">Munter Droppy auf!</string>
     <string name="cheer_content">"Ist Droppy traurig, so lache möglichst fröhlich, um ihn anzustecken. Ist Droppy hingegen wütend, so rede beruhigend auf ihn ein.\nLeg dich ins Zeug, um Droppy aufzumuntern!"</string>

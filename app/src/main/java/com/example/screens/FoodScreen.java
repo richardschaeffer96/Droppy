@@ -50,7 +50,7 @@ public class FoodScreen {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.setContentView(R.layout.gameover_screen);
+                ((MainActivity) activity).backToMain(view);
             }
         });
 
