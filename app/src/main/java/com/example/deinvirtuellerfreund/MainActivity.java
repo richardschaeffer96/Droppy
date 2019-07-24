@@ -993,11 +993,15 @@ infotext
         info.setVisibility(View.VISIBLE);
         level_bar.setProgress(levelbarauslesen("levelbar.txt"));
         if(points==0){
-
+            activity.setContentView(R.layout.gameover_screen);
+            saySentence(w_gameover,null);
         }else{
             changeLevel(points);
-
+            activity.setContentView(R.layout.won_screen);
+            saySentence(w_gewonnen,null);
         }
+
+
     }
 
     public void listRaw(){
